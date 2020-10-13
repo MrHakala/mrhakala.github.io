@@ -113,12 +113,25 @@ function loop() {
   });
 }
 
+var start = 1
 // listen to keyboard events to move the snake
 document.addEventListener('keydown', function(e) {
   // prevent snake from backtracking on itself by checking that it's 
   // not already moving on the same axis (pressing left while moving
   // left won't do anything, and pressing right while moving left
   // shouldn't let you collide with your own body)
+  if (start) {
+    snake.x = 160;
+    snake.y = 160;
+    snake.cells = [];
+    snake.maxCells = 4;
+    snake.dx = grid;
+    snake.dy = 0;
+
+    apple.x = getRandomInt(0, 25) * grid;
+    apple.y = getRandomInt(0, 25) * grid;
+    start = 0;
+  }
   
   // left arrow key
   if (e.which === 37 && snake.dx === 0) {
