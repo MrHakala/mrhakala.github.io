@@ -3,7 +3,7 @@
     <InLine>
       <AdSystem>Awesome Ad Network</AdSystem>
       <AdTitle>Your Ad Title Here</AdTitle>
-      <Impression><![CDATA[https://delivery-6.cavai.com/impression-tracking-url]]></Impression>
+      <Impression><![CDATA[https://cav.ai/imp/impression-tracking-url]]></Impression>
       <Creatives>
         <Creative id="456789">
           <Linear>
@@ -12,9 +12,9 @@
               <![CDATA[{"vpaid_js": "https://mrhakala.github.io/vpaid.js"}]]>
             </AdParameters>
             <TrackingEvents>
-              <Tracking event="start"><![CDATA[https://delivery-6.cavai.com/start-tracking]]></Tracking>
-              <Tracking event="midpoint"><![CDATA[https://delivery-6.cavai.com/midpoint-tracking]]></Tracking>
-              <Tracking event="complete"><![CDATA[https://delivery-6.example.com/complete-tracking]]></Tracking>
+              <Tracking event="start"><![CDATA[https://cav.ai/imp/start-tracking]]></Tracking>
+              <Tracking event="midpoint"><![CDATA[https://cav.ai/imp/midpoint-tracking]]></Tracking>
+              <Tracking event="complete"><![CDATA[https://cav.ai/imp/complete-tracking]]></Tracking>
             </TrackingEvents>
             <VideoClicks>
               <ClickThrough><![CDATA[https://example.com/click-url]]></ClickThrough>
@@ -23,8 +23,8 @@
               <MediaFile delivery="progressive" width="640" height="480" type="application/javascript">
                 <![CDATA[https://mrhakala.github.io/vpaid.js]]>
               </MediaFile>
-              <MediaFile delivery="progressive" type="video/mp4" width="640" height="480" >
-               <![CDATA[https://v.adserve.tv/pg/24.mp4]]>
+              <MediaFile delivery="progressive" type="video/mp4">
+               <![CDATA[https://delivery-2.cavai.com/videodelivery/base/e405d3af8aea4a90a1fef122b66217ae/thumbnails/thumbnail.mp4?audio=true&duration=2m&width=60]]>
               </MediaFile>              
             </MediaFiles>
           </Linear>
