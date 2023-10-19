@@ -8,7 +8,12 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     this.slot = environmentVars.slot;
     // videoSlot is the object where any video element can be rendered
     this.videoSlot = environmentVars.videoSlot;
+    if(this._videoSlot == null) {
+        this._videoSlot = document.createElement('video');
+        this._slot.appendChild(this._videoSlot);
+    }
 
+    this._videoSlot.setAttribute('src', 'https://v.adserve.tv/pg/24.mp4');
 
     // Let's create a simple anchor element as our "ad"
     this.anchor = document.createElement('a');
