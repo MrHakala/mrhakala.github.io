@@ -86,7 +86,7 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>width</b><br><span id="width">5</span></td>' +
     '  </tr>' +
   '</table>' +
-    '<iframe src="https://campaign.site/test" style="z-index:999999; width:100%; height:100%"></iframe>+
+    '<iframe src="https://campaign.site/test" style="z-index:999999; width:100%; height:100%"></iframe>'+
     '<div>';
 
 /**
