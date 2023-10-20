@@ -85,9 +85,34 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>view mode</b><br><span id="viewMode">normal</span></td>' +
     '    <td><b>width</b><br><span id="width">5</span></td>' +
     '  </tr>' +
-  '</table>' +
-    '<iframe src="https://campaign.site/test" style="z-index:999999; width:100%; height:100%"></iframe>'+
-    '<div>';
+    '</table>' +
+    '<div>' +
+    '<hr>' +
+    '<div id="AdClickThruOptions" style="display:none;">' +
+    '  Click Through URL <input type="text" id="clickThruUrl"' +
+    '    value="http://example.com"/><br>' +
+    '  ID <input type="text" id="clickThruId" value="1"/><br>' +
+    '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
+    '     value="false"/><br>' +
+    '</div>' +
+    '<div id="AdErrorOptions" style="display:none;">' +
+    '  AdError <input type="text" id="adErrorMsg" value="ad error message"/>' +
+    '</div>' +
+    '<div id="AdLogOptions" style="display:none;">' +
+    '  AdLog <input type="text" id="adLogMsg" value="ad log message"/>' +
+    '</div>' +
+    '<div id="AdInteractionOptions" style="display:none;">' +
+    '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
+    '</div>' +
+    '</div>' +
+    '<h2><input type="button" id="triggerEvent" value="Trigger Event"/></h2>' +
+    '</div>' +
+    '<div style="position:fixed; bottom:10px">' +
+    '  Last event from player <input type="text" style="width:200px"' +
+    '     id="lastVpaidEvent" value=""/>' +
+    '</div>' +
+    '</div>';
+
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
