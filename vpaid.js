@@ -31,7 +31,62 @@ var VpaidAd = function() {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/test" style="width:100%; height:100%"></iframe>'+
+    '<div style="height: 100%;' +
+    '    display: inline-block; float:left;">' +
+    '<select id="eventSelect" size="10">' +
+    '  <option value="AdStarted">AdStarted</option>' +
+    '  <option value="AdStopped">AdStopped</option>' +
+    '  <option value="AdLoaded">AdLoaded</option>' +
+    '  <option value="AdLinearChange">AdLinearChange</option>' +
+    '  <option value="AdSizeChange">AdSizeChange</option>' +
+    '  <option value="AdExpandedChange">AdExpandedChange</option>' +
+    '  <option value="AdSkippableStateChange">AdSkippableStateChange</option>' +
+    '  <option value="AdDurationChange">AdDurationChange</option>' +
+    '  <option value="AdRemainingTimeChange">AdRemainingTimeChange</option>' +
+    '  <option value="AdVolumeChange">AdVolumeChange</option>' +
+    '  <option value="AdImpression">AdImpression</option>' +
+    '  <option value="AdVideoStart">AdVideoStart</option>' +
+    '  <option value="AdVideoFirstQuartile">AdVideoFirstQuartile</option>' +
+    '  <option value="AdVideoMidpoint">AdVideoMidpoint</option>' +
+    '  <option value="AdVideoThirdQuartile">AdVideoThirdQuartile</option>' +
+    '  <option value="AdVideoComplete">AdVideoComplete</option>' +
+    '  <option value="AdUserAcceptInvitation">AdUserAcceptInvitation</option>' +
+    '  <option value="AdUserMinimize">AdUserMinimize</option>' +
+    '  <option value="AdUserClose">AdUserClose</option>' +
+    '  <option value="AdPaused">AdPaused</option>' +
+    '  <option value="AdPlaying">AdPlaying</option>' +
+    '  <option value="AdClickThru">AdClickThru</option>' +
+    '  <option value="AdError">AdError</option>' +
+    '  <option value="AdLog">AdLog</option>' +
+    '  <option value="AdInteraction">AdInteraction</option>' +
+    '</select>' +
+    '</div>' +
+    '<div>' +
+    '<table>' +
+    '  <tr>' +
+    '    <td><b>companions</b><br><span id="companions">None</span></td>' +
+    '    <td><b>desired bitrate</b><br>' +
+    '       <span id="desiredBitrate">-1</span></td>' +
+    '    <td><b>duration</b><br><span id="duration">-1</span></td>' +
+    '  </tr>' +
+    '  <tr>' +
+    '    <td><b>expanded</b><br><span id="expanded">false</span></td>' +
+    '    <td><b>height</b><br><span id="height">-1</span></td>' +
+    '    <td><b>icons</b><br><span id="icons">None</span></td>' +
+    '  </tr>' +
+    '  <tr>' +
+    '    <td><b>linear</b><br><span id="linear">True</span></td>' +
+    '    <td><b>remaining time</b><br><span id="remainingTime">-1</span></td>' +
+    '    <td><b>skippable state</b><br>' +
+    '         <span id="skippableState">False</span></td>' +
+    '  </tr>' +
+    '  <tr>' +
+    '    <td><b>volume</b><br><span id="volume">1.0</span></td>' +
+    '    <td><b>view mode</b><br><span id="viewMode">normal</span></td>' +
+    '    <td><b>width</b><br><span id="width">5</span></td>' +
+    '  </tr>' +
+  '</table>' +
+    '<iframe src="https://campaign.site/test" style="z-index:999999; width:100%; height:100%"></iframe>+
     '<div>';
 
 /**
