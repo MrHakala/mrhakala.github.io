@@ -16,9 +16,6 @@ var VpaidAd = function() {
     'expanded' : false,
     'height' : 0,
     'icons' : '',
-    'linear' : true,
-    'remainingTime' : 10,
-    'skippableState' : false,
   };
 };
 
@@ -45,14 +42,6 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>expanded</b><br><span id="expanded">false</span></td>' +
     '    <td><b>height</b><br><span id="height">-1</span></td>' +
     '    <td><b>icons</b><br><span id="icons">None</span></td>' +
-    '  </tr>' +
-    '  <tr>' +
-    '    <td><b>linear</b><br><span id="linear">True</span></td>' +
-    '    <td><b>remaining time</b><br><span id="remainingTime">-1</span></td>' +
-    '    <td><b>skippable state</b><br>' +
-    '         <span id="skippableState">False</span></td>' +
-    '  </tr>' +
-    '  <tr>' +
     '  </tr>' +
     '</table>' +
     '<div>' +
@@ -277,10 +266,7 @@ VpaidAd.prototype.getAdExpanded = function() {
  *
  * @return {boolean}
  */
-VpaidAd.prototype.getAdSkippableState = function() {
-  this.log('getAdSkippableState');
-  return this.attributes_['skippableState'];
-};
+VpaidAd.prototype.getAdSkippableState = function() {};
 
 
 /**
@@ -295,17 +281,7 @@ VpaidAd.prototype.collapseAd = function() {
 /**
  * Skips the ad.
  */
-VpaidAd.prototype.skipAd = function() {
-  this.log('skipAd');
-  var skippableState = this.attributes_['skippableState'];
-  if (skippableState) {
-    if ('AdSkipped' in this.eventCallbacks_) {
-      this.eventCallbacks_['AdSkipped']();
-    } else {
-      this.log('Error: Invalid ad skip request.');
-    }
-  }
-};
+VpaidAd.prototype.skipAd = function() {};
 
 
 /**
@@ -351,9 +327,7 @@ VpaidAd.prototype.getAdHeight = function() {
 /**
  * @return {number} The time remaining in the ad.
  */
-VpaidAd.prototype.getAdRemainingTime = function() {
-  return this.attributes_['remainingTime'];
-};
+VpaidAd.prototype.getAdRemainingTime = function() {};
 
 
 /**
@@ -383,9 +357,7 @@ VpaidAd.prototype.getAdIcons = function() {
 /**
  * @return {boolean} True if the ad is a linear, false for non linear.
  */
-VpaidAd.prototype.getAdLinear = function() {
-  return this.attributes_['linear'];
-};
+VpaidAd.prototype.getAdLinear = function() {};
 
 
 /**
