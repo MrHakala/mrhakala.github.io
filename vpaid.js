@@ -21,10 +21,6 @@ VpaidAd.HTML_TEMPLATE =
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
     '</div>' +
-    '<div>' +
-    '<div>' +
-    '</div>' +
-    '</div>' +
     '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
