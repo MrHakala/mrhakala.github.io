@@ -17,7 +17,7 @@ var VpaidAd = function() {
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
 VpaidAd.HTML_TEMPLATE =
-    '<div style="background:#f5f5f5; width:100%; height:100%">' +
+    '<div style="background:#108ccd; width:100%; height:100%">' +
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
     '</div>' +
@@ -37,7 +37,7 @@ VpaidAd.HTML_TEMPLATE =
     '  Last event from player <input type="text" style="width:200px"' +
     '     id="lastVpaidEvent" value=""/>' +
     '</div>' +
-    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
+    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:-480px;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
@@ -137,18 +137,6 @@ VpaidAd.prototype.stopAd = function() {
 
 
 /**
- * @param {number} value The volume in percentage.
- */
-VpaidAd.prototype.setAdVolume = function(value) {};
-
-
-/**
- * @return {number} The volume of the ad.
- */
-VpaidAd.prototype.getAdVolume = function() {};
-
-
-/**
  * @param {number} width The new width.
  * @param {number} height A new height.
  * @param {string} viewMode A new view mode.
@@ -184,40 +172,6 @@ VpaidAd.prototype.resumeAd = function() {
 
 
 /**
- * Expands the ad.
- */
-VpaidAd.prototype.expandAd = function() {};
-
-
-/**
- * Returns true if the ad is expanded.
- *
- * @return {boolean}
- */
-VpaidAd.prototype.getAdExpanded = function() {};
-
-
-/**
- * Returns the skippable state of the ad.
- *
- * @return {boolean}
- */
-VpaidAd.prototype.getAdSkippableState = function() {};
-
-
-/**
- * Collapses the ad.
- */
-VpaidAd.prototype.collapseAd = function() {};
-
-
-/**
- * Skips the ad.
- */
-VpaidAd.prototype.skipAd = function() {};
-
-
-/**
  * Registers a callback for an event.
  * @param {Function} aCallback The callback function.
  * @param {string} eventName The callback type.
@@ -241,61 +195,22 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
 };
 
 
-/**
- * @return {number} The ad width.
- */
-VpaidAd.prototype.getAdWidth = function() {
-  return 0;
-};
-
-
-/**
- * @return {number} The ad height.
- */
+VpaidAd.prototype.setAdVolume = function(value) {};
+VpaidAd.prototype.getAdVolume = function() {};
+VpaidAd.prototype.expandAd = function() {};
+VpaidAd.prototype.getAdExpanded = function() {};
+VpaidAd.prototype.getAdSkippableState = function() {};
+VpaidAd.prototype.collapseAd = function() {};
+VpaidAd.prototype.skipAd = function() {};
+VpaidAd.prototype.getAdWidth = function() {return 0;};
 VpaidAd.prototype.getAdHeight = function() {};
-
-
-/**
- * @return {number} The time remaining in the ad.
- */
 VpaidAd.prototype.getAdRemainingTime = function() {};
-
-
-/**
- * @return {number} The duration of the ad.
- */
 VpaidAd.prototype.getAdDuration = function() {};
-
-
-/**
- * @return {string} List of companions in vast xml.
- */
 VpaidAd.prototype.getAdCompanions = function() {};
-
-
-/**
- * @return {string} A list of icons.
- */
 VpaidAd.prototype.getAdIcons = function() {};
-
-
-/**
- * @return {boolean} True if the ad is a linear, false for non linear.
- */
 VpaidAd.prototype.getAdLinear = function() {};
-
-
-/**
- * Logs events and messages.
- *
- * @param {string} message
- */
-VpaidAd.prototype.log = function(message) {
-  var logTextArea = document.getElementById('lastVpaidEvent');
-  if (logTextArea != null) {
-    logTextArea.value = message;
-  }
-};
+VpaidAd.prototype.log = function(message) {};
+VpaidAd.prototype.eventSelected_ = function() {};
 
 
 /**
@@ -367,15 +282,6 @@ VpaidAd.prototype.adInteractionHandler_ = function() {
   this.log('adLog(' + adInteraction + ')');
   this.eventCallbacks_['AdInteraction'](adInteraction);
 };
-
-
-/**
- * Callback function when an event is selected from the dropdown.
- *
- * @private
- */
-VpaidAd.prototype.eventSelected_ = function() {};
-
 
 /**
  * @param {string} eventName
