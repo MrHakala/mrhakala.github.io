@@ -34,21 +34,6 @@ VpaidAd.HTML_TEMPLATE =
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
     '<select id="eventSelect" size="10">' +
-    '  <option value="AdStarted">AdStarted</option>' +
-    '  <option value="AdStopped">AdStopped</option>' +
-    '  <option value="AdLoaded">AdLoaded</option>' +
-    '  <option value="AdLinearChange">AdLinearChange</option>' +
-    '  <option value="AdVolumeChange">AdVolumeChange</option>' +
-    '  <option value="AdImpression">AdImpression</option>' +
-    '  <option value="AdUserAcceptInvitation">AdUserAcceptInvitation</option>' +
-    '  <option value="AdUserMinimize">AdUserMinimize</option>' +
-    '  <option value="AdUserClose">AdUserClose</option>' +
-    '  <option value="AdPaused">AdPaused</option>' +
-    '  <option value="AdPlaying">AdPlaying</option>' +
-    '  <option value="AdClickThru">AdClickThru</option>' +
-    '  <option value="AdError">AdError</option>' +
-    '  <option value="AdLog">AdLog</option>' +
-    '  <option value="AdInteraction">AdInteraction</option>' +
     '</select>' +
     '</div>' +
     '<div>' +
