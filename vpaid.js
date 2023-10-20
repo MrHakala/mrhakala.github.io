@@ -17,8 +17,8 @@ var VpaidAd = function() {
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
 VpaidAd.HTML_TEMPLATE =
-    '<div style="background:#108ccd; width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="absolute;z-index:99999; width:100%; height:100%"></iframe>'+
+    '<div style="background:##F9B634; width:100%; height:100%">' +
+    '<iframe src="https://campaign.site/Tassimo" style="z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
