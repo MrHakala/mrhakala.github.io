@@ -19,7 +19,6 @@ var VpaidAd = function() {
     'linear' : true,
     'remainingTime' : 10,
     'skippableState' : false,
-    'width' : 0,
     'volume' : 50
   };
 };
@@ -56,7 +55,6 @@ VpaidAd.HTML_TEMPLATE =
     '  </tr>' +
     '  <tr>' +
     '    <td><b>volume</b><br><span id="volume">1.0</span></td>' +
-    '    <td><b>width</b><br><span id="width">5</span></td>' +
     '  </tr>' +
     '</table>' +
     '<div>' +
@@ -110,7 +108,6 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  this.attributes_['width'] = width;
   this.attributes_['height'] = height;
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
@@ -234,7 +231,6 @@ VpaidAd.prototype.getAdVolume = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  this.attributes_['width'] = width;
   this.attributes_['height'] = height;
   if ('AdSizeChange' in this.eventCallbacks_) {
     this.eventCallbacks_['AdSizeChange']();
@@ -351,7 +347,7 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
  * @return {number} The ad width.
  */
 VpaidAd.prototype.getAdWidth = function() {
-  return this.attributes_['width'];
+  return 0;
 };
 
 
