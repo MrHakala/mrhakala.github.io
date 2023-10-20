@@ -33,8 +33,6 @@ VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
-    '<select id="eventSelect" size="10">' +
-    '</select>' +
     '</div>' +
     '<div>' +
     '<table>' +
@@ -142,39 +140,6 @@ VpaidAd.prototype.renderSlot_ = function() {
   this.slot_.innerHTML = VpaidAd.HTML_TEMPLATE;
 };
 
-
-/**
- * Adds all listeners to buttons.
- * @private
- */
-VpaidAd.prototype.addButtonListeners_ = function() {
-  var eventSelect = document.getElementById('eventSelect');
-  eventSelect.addEventListener('change', this.eventSelected_.bind(this));
-
-  var triggerEvent = document.getElementById('triggerEvent');
-  triggerEvent.addEventListener('click', this.triggerEvent_.bind(this));
-};
-
-
-/**
- * Triggers an event.
- * @private
- */
-VpaidAd.prototype.triggerEvent_ = function() {
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
-  if (value == 'AdClickThru') {
-    this.adClickThruHandler_();
-  } else if (value == 'AdError') {
-    this.adErrorHandler_();
-  } else if (value == 'AdLog') {
-    this.adLogHandler_();
-  } else if (value == 'AdInteraction') {
-    this.adInteractionHandler_();
-  } else if (value in this.eventCallbacks_) {
-    this.eventCallbacks_[value]();
-  }
-};
 
 
 /**
@@ -488,35 +453,6 @@ VpaidAd.prototype.adInteractionHandler_ = function() {
   var adInteraction = document.getElementById('adInteractionId').value;
   this.log('adLog(' + adInteraction + ')');
   this.eventCallbacks_['AdInteraction'](adInteraction);
-};
-
-
-/**
- * Callback function when an event is selected from the dropdown.
- *
- * @private
- */
-VpaidAd.prototype.eventSelected_ = function() {
-  var clickThruParams = document.getElementById('AdClickThruOptions');
-  var adErrorParams = document.getElementById('AdErrorOptions');
-  var adLogParams = document.getElementById('AdLogOptions');
-  var adInteractionParams = document.getElementById('AdInteractionOptions');
-  clickThruParams.style.display = 'none';
-  adErrorParams.style.display = 'none';
-  adLogParams.style.display = 'none';
-  adInteractionParams.style.display = 'none';
-
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
-  if (value == 'AdClickThru') {
-    clickThruParams.style.display = 'inline';
-  } else if (value == 'AdError') {
-    adErrorParams.style.display = 'inline';
-  } else if (value == 'AdLog') {
-    adLogParams.style.display = 'inline';
-  } else if (value == 'AdInteraction') {
-    adInteractionParams.style.display = 'inline';
-  }
 };
 
 
