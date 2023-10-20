@@ -30,7 +30,9 @@ var VpaidAd = function() {
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
 VpaidAd.HTML_TEMPLATE =
-    '<iframe src="https://campaign.site/test" style="background:#f5f5f5; width:100%; height:100%"></iframe>';
+    '<div style="background:#f5f5f5; width:100%; height:100%">' +
+    '<iframe src="https://campaign.site/test" style="width:100%; height:100%"></iframe>'+
+    '<div>';
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
