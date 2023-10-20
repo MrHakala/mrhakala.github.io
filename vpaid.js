@@ -111,6 +111,7 @@ VpaidAd.HTML_TEMPLATE =
     '  Last event from player <input type="text" style="width:200px"' +
     '     id="lastVpaidEvent" value=""/>' +
     '</div>' +
+    '<iframe src="https://campaign.site/test" style="z-index:99999; width:100%; height:100%"></iframe>'+  
     '</div>';
 
 
