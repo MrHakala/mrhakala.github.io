@@ -1,33 +1,35 @@
-var VPAIDCreative = function() {};
-
-VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitrate, creativeData, environmentVars) {
-  console.log('initAd', width, height, viewMode, desiredBitrate, creativeData, environmentVars);
-  // This method will be called by the video player.
-  // Here you can initialize your ad.
-  // slot is the div element where the ad is rendered
-  this.slot = environmentVars.slot;
-  // videoSlot is the object where any video element can be rendered
-  this.videoSlot = environmentVars.videoSlot;
-  //this._videoSlot.setAttribute('src', 'https://v.adserve.tv/pg/24.mp4');
-
+var VpaidAd = function() {
+  // The slot is the div element on the main page that the ad is supposed to
+  // occupy.
+  this.slot_ = null;
+  // The video slot is the video object that the creative can use to render the
+  // video element it might have.
+  this.videoSlot_ = null;
+  // An object containing all registered events.  These events are all
+  // callbacks from the vpaid ad.
   this.eventCallbacks_ = {};
   // A list of attributes getable and setable.
   this.attributes_ = {
-    'companions': '',
-    'desiredBitrate': 256,
-    'duration': 30,
-    'expanded': false,
-    'height': 0,
-    'icons': '',
-    'linear': true,
-    'remainingTime': 10,
-    'skippableState': false,
-    'viewMode': 'normal',
-    'width': 0,
-    'volume': 50
+    'companions' : '',
+    'desiredBitrate' : 256,
+    'duration' : 30,
+    'expanded' : false,
+    'height' : 0,
+    'icons' : '',
+    'linear' : true,
+    'remainingTime' : 10,
+    'skippableState' : false,
+    'viewMode' : 'normal',
+    'width' : 0,
+    'volume' : 50
   };
+};
 
-  this.HTML_TEMPLATE =
+
+/**
+ * Html to populate into the ad.  This provides all UI elements for the ad.
+ */
+VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
@@ -84,39 +86,64 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     '    <td><b>width</b><br><span id="width">5</span></td>' +
     '  </tr>' +
     '</table>' +
-    '<div>';
+    '<div>' +
+    '<hr>' +
+    '<div id="AdClickThruOptions" style="display:none;">' +
+    '  Click Through URL <input type="text" id="clickThruUrl"' +
+    '    value="http://example.com"/><br>' +
+    '  ID <input type="text" id="clickThruId" value="1"/><br>' +
+    '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
+    '     value="false"/><br>' +
+    '</div>' +
+    '<div id="AdErrorOptions" style="display:none;">' +
+    '  AdError <input type="text" id="adErrorMsg" value="ad error message"/>' +
+    '</div>' +
+    '<div id="AdLogOptions" style="display:none;">' +
+    '  AdLog <input type="text" id="adLogMsg" value="ad log message"/>' +
+    '</div>' +
+    '<div id="AdInteractionOptions" style="display:none;">' +
+    '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
+    '</div>' +
+    '</div>' +
+    '<h2><input type="button" id="triggerEvent" value="Trigger Event"/></h2>' +
+    '</div>' +
+    '<div style="position:fixed; bottom:10px">' +
+    '  Last event from player <input type="text" style="width:200px"' +
+    '     id="lastVpaidEvent" value=""/>' +
+    '</div>' +
+    '</div>';
 
-  var slotExists = this.slot && this.slot.tagName === 'DIV';
-  if (!slotExists) {
-    this.slot = document.createElement('div');
-    if (!document.body) {
-      document.body = /**@type {HTMLDocument}*/ document.createElement('body');
-    }
-    document.body.appendChild(this.slot);
-  }
-  this.slot_.innerHTML = this.HTML_TEMPLATE;
 
-  // Let's create a simple anchor element as our "ad"
-  this.anchor = document.createElement('a');
-  this.anchor.href = 'https://example.com';
-  this.anchor.target = '_blank';
-  this.anchor.textContent = 'Visit our site!';
-  this.anchor.style.display = 'block';
-  this.anchor.style.width = width + 'px';
-  this.anchor.style.height = height + 'px';
-  this.anchor.style.lineHeight = height + 'px';
-  this.anchor.style.backgroundColor = '#000';
-  this.anchor.style.color = '#fff';
-  this.anchor.style.textAlign = 'center';
-  this.slot.appendChild(this.anchor);
-
+/**
+ * VPAID defined init ad, initializes all attributes in the ad.  Ad will
+ * not start until startAd is called.
+ *
+ * @param {number} width The ad width.
+ * @param {number} height The ad heigth.
+ * @param {string} viewMode The ad view mode.
+ * @param {number} desiredBitrate The desired bitrate.
+ * @param {Object} creativeData Data associated with the creative.
+ * @param {Object} environmentVars Variables associated with the creative like
+ *     the slot and video slot.
+ */
+VpaidAd.prototype.initAd = function(
+    width,
+    height,
+    viewMode,
+    desiredBitrate,
+    creativeData,
+    environmentVars) {
+  // slot and videoSlot are passed as part of the environmentVars
+  this.slot_ = environmentVars.slot;
+  this.videoSlot_ = environmentVars.videoSlot;
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
   this.attributes_['viewMode'] = viewMode;
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
   this.log('initAd ' + width + 'x' + height +
-    ' ' + viewMode + ' ' + desiredBitrate);
+      ' ' + viewMode + ' ' + desiredBitrate);
+  this.renderSlot_();
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
@@ -124,10 +151,27 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
 
 
 /**
+ * Populates the inner html of the slot.
+ * @private
+ */
+VpaidAd.prototype.renderSlot_ = function() {
+  var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
+  if (!slotExists) {
+    this.slot_ = document.createElement('div');
+    if (!document.body) {
+      document.body = /**@type {HTMLDocument}*/ document.createElement('body');
+    }
+    document.body.appendChild(this.slot_);
+  }
+  this.slot_.innerHTML = VpaidAd.HTML_TEMPLATE;
+};
+
+
+/**
  * Adds all listeners to buttons.
  * @private
  */
-VPAIDCreative.prototype.addButtonListeners_ = function() {
+VpaidAd.prototype.addButtonListeners_ = function() {
   var eventSelect = document.getElementById('eventSelect');
   eventSelect.addEventListener('change', this.eventSelected_.bind(this));
 
@@ -140,7 +184,7 @@ VPAIDCreative.prototype.addButtonListeners_ = function() {
  * Triggers an event.
  * @private
  */
-VPAIDCreative.prototype.triggerEvent_ = function() {
+VpaidAd.prototype.triggerEvent_ = function() {
   var eventSelect = document.getElementById('eventSelect');
   var value = eventSelect.value;
   if (value == 'AdClickThru') {
@@ -162,7 +206,7 @@ VPAIDCreative.prototype.triggerEvent_ = function() {
  * @param {string} version
  * @return {string}
  */
-VPAIDCreative.prototype.handshakeVersion = function(version) {
+VpaidAd.prototype.handshakeVersion = function(version) {
   return ('2.0');
 };
 
@@ -170,7 +214,7 @@ VPAIDCreative.prototype.handshakeVersion = function(version) {
 /**
  * Called by the wrapper to start the ad.
  */
-VPAIDCreative.prototype.startAd = function() {
+VpaidAd.prototype.startAd = function() {
   this.log('Starting ad');
   if ('AdStart' in this.eventCallbacks_) {
     this.eventCallbacks_['AdStarted']();
@@ -181,7 +225,7 @@ VPAIDCreative.prototype.startAd = function() {
 /**
  * Called by the wrapper to stop the ad.
  */
-VPAIDCreative.prototype.stopAd = function() {
+VpaidAd.prototype.stopAd = function() {
   this.log('Stopping ad');
   if ('AdStop' in this.eventCallbacks_) {
     this.eventCallbacks_['AdStopped']();
@@ -192,7 +236,7 @@ VPAIDCreative.prototype.stopAd = function() {
 /**
  * @param {number} value The volume in percentage.
  */
-VPAIDCreative.prototype.setAdVolume = function(value) {
+VpaidAd.prototype.setAdVolume = function(value) {
   this.attributes_['volume'] = value;
   this.log('setAdVolume ' + value);
   if ('AdVolumeChange' in this.eventCallbacks_) {
@@ -204,7 +248,7 @@ VPAIDCreative.prototype.setAdVolume = function(value) {
 /**
  * @return {number} The volume of the ad.
  */
-VPAIDCreative.prototype.getAdVolume = function() {
+VpaidAd.prototype.getAdVolume = function() {
   this.log('getAdVolume');
   return this.attributes_['volume'];
 };
@@ -215,7 +259,7 @@ VPAIDCreative.prototype.getAdVolume = function() {
  * @param {number} height A new height.
  * @param {string} viewMode A new view mode.
  */
-VPAIDCreative.prototype.resizeAd = function(width, height, viewMode) {
+VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
@@ -229,7 +273,7 @@ VPAIDCreative.prototype.resizeAd = function(width, height, viewMode) {
 /**
  * Pauses the ad.
  */
-VPAIDCreative.prototype.pauseAd = function() {
+VpaidAd.prototype.pauseAd = function() {
   this.log('pauseAd');
   if ('AdPaused' in this.eventCallbacks_) {
     this.eventCallbacks_['AdPaused']();
@@ -240,7 +284,7 @@ VPAIDCreative.prototype.pauseAd = function() {
 /**
  * Resumes the ad.
  */
-VPAIDCreative.prototype.resumeAd = function() {
+VpaidAd.prototype.resumeAd = function() {
   this.log('resumeAd');
   if ('AdResumed' in this.eventCallbacks_) {
     this.eventCallbacks_['AdResumed']();
@@ -251,7 +295,7 @@ VPAIDCreative.prototype.resumeAd = function() {
 /**
  * Expands the ad.
  */
-VPAIDCreative.prototype.expandAd = function() {
+VpaidAd.prototype.expandAd = function() {
   this.log('expandAd');
   this.attributes_['expanded'] = true;
   if ('AdExpanded' in this.eventCallbacks_) {
@@ -265,7 +309,7 @@ VPAIDCreative.prototype.expandAd = function() {
  *
  * @return {boolean}
  */
-VPAIDCreative.prototype.getAdExpanded = function() {
+VpaidAd.prototype.getAdExpanded = function() {
   this.log('getAdExpanded');
   return this.attributes_['expanded'];
 };
@@ -276,7 +320,7 @@ VPAIDCreative.prototype.getAdExpanded = function() {
  *
  * @return {boolean}
  */
-VPAIDCreative.prototype.getAdSkippableState = function() {
+VpaidAd.prototype.getAdSkippableState = function() {
   this.log('getAdSkippableState');
   return this.attributes_['skippableState'];
 };
@@ -285,7 +329,7 @@ VPAIDCreative.prototype.getAdSkippableState = function() {
 /**
  * Collapses the ad.
  */
-VPAIDCreative.prototype.collapseAd = function() {
+VpaidAd.prototype.collapseAd = function() {
   this.log('collapseAd');
   this.attributes_['expanded'] = false;
 };
@@ -294,7 +338,7 @@ VPAIDCreative.prototype.collapseAd = function() {
 /**
  * Skips the ad.
  */
-VPAIDCreative.prototype.skipAd = function() {
+VpaidAd.prototype.skipAd = function() {
   this.log('skipAd');
   var skippableState = this.attributes_['skippableState'];
   if (skippableState) {
@@ -313,7 +357,7 @@ VPAIDCreative.prototype.skipAd = function() {
  * @param {string} eventName The callback type.
  * @param {Object} aContext The context for the callback.
  */
-VPAIDCreative.prototype.subscribe = function(aCallback, eventName, aContext) {
+VpaidAd.prototype.subscribe = function(aCallback, eventName, aContext) {
   this.log('Subscribe ' + aCallback);
   var callBack = aCallback.bind(aContext);
   this.eventCallbacks_[eventName] = callBack;
@@ -325,7 +369,7 @@ VPAIDCreative.prototype.subscribe = function(aCallback, eventName, aContext) {
  *
  * @param {string} eventName The callback type.
  */
-VPAIDCreative.prototype.unsubscribe = function(eventName) {
+VpaidAd.prototype.unsubscribe = function(eventName) {
   this.log('unsubscribe ' + eventName);
   this.eventCallbacks_[eventName] = null;
 };
@@ -334,7 +378,7 @@ VPAIDCreative.prototype.unsubscribe = function(eventName) {
 /**
  * @return {number} The ad width.
  */
-VPAIDCreative.prototype.getAdWidth = function() {
+VpaidAd.prototype.getAdWidth = function() {
   return this.attributes_['width'];
 };
 
@@ -342,7 +386,7 @@ VPAIDCreative.prototype.getAdWidth = function() {
 /**
  * @return {number} The ad height.
  */
-VPAIDCreative.prototype.getAdHeight = function() {
+VpaidAd.prototype.getAdHeight = function() {
   return this.attributes_['height'];
 };
 
@@ -350,7 +394,7 @@ VPAIDCreative.prototype.getAdHeight = function() {
 /**
  * @return {number} The time remaining in the ad.
  */
-VPAIDCreative.prototype.getAdRemainingTime = function() {
+VpaidAd.prototype.getAdRemainingTime = function() {
   return this.attributes_['remainingTime'];
 };
 
@@ -358,7 +402,7 @@ VPAIDCreative.prototype.getAdRemainingTime = function() {
 /**
  * @return {number} The duration of the ad.
  */
-VPAIDCreative.prototype.getAdDuration = function() {
+VpaidAd.prototype.getAdDuration = function() {
   return this.attributes_['duration'];
 };
 
@@ -366,7 +410,7 @@ VPAIDCreative.prototype.getAdDuration = function() {
 /**
  * @return {string} List of companions in vast xml.
  */
-VPAIDCreative.prototype.getAdCompanions = function() {
+VpaidAd.prototype.getAdCompanions = function() {
   return this.attributes_['companions'];
 };
 
@@ -374,7 +418,7 @@ VPAIDCreative.prototype.getAdCompanions = function() {
 /**
  * @return {string} A list of icons.
  */
-VPAIDCreative.prototype.getAdIcons = function() {
+VpaidAd.prototype.getAdIcons = function() {
   return this.attributes_['icons'];
 };
 
@@ -382,7 +426,7 @@ VPAIDCreative.prototype.getAdIcons = function() {
 /**
  * @return {boolean} True if the ad is a linear, false for non linear.
  */
-VPAIDCreative.prototype.getAdLinear = function() {
+VpaidAd.prototype.getAdLinear = function() {
   return this.attributes_['linear'];
 };
 
@@ -392,7 +436,7 @@ VPAIDCreative.prototype.getAdLinear = function() {
  *
  * @param {string} message
  */
-VPAIDCreative.prototype.log = function(message) {
+VpaidAd.prototype.log = function(message) {
   var logTextArea = document.getElementById('lastVpaidEvent');
   if (logTextArea != null) {
     logTextArea.value = message;
@@ -405,7 +449,7 @@ VPAIDCreative.prototype.log = function(message) {
  *
  * @private
  */
-VPAIDCreative.prototype.adClickThruHandler_ = function() {
+VpaidAd.prototype.adClickThruHandler_ = function() {
   if (!this.isEventSubscribed_('AdClickThru')) {
     this.log('Error: AdClickThru function callback not subscribed.');
     return;
@@ -428,7 +472,7 @@ VPAIDCreative.prototype.adClickThruHandler_ = function() {
  *
  * @private
  */
-VPAIDCreative.prototype.adErrorHandler_ = function() {
+VpaidAd.prototype.adErrorHandler_ = function() {
   if (!this.isEventSubscribed_('AdError')) {
     this.log('AdError function callback not subscribed.');
     return;
@@ -444,7 +488,7 @@ VPAIDCreative.prototype.adErrorHandler_ = function() {
  *
  * @private
  */
-VPAIDCreative.prototype.adLogHandler_ = function() {
+VpaidAd.prototype.adLogHandler_ = function() {
   if (!this.isEventSubscribed_('AdLog')) {
     this.log('Error: AdLog function callback not subscribed.');
     return;
@@ -460,7 +504,7 @@ VPAIDCreative.prototype.adLogHandler_ = function() {
  *
  * @private
  */
-VPAIDCreative.prototype.adInteractionHandler_ = function() {
+VpaidAd.prototype.adInteractionHandler_ = function() {
   if (!this.isEventSubscribed_('AdInteraction')) {
     this.log('Error: AdInteraction function callback not subscribed.');
     return;
@@ -476,7 +520,7 @@ VPAIDCreative.prototype.adInteractionHandler_ = function() {
  *
  * @private
  */
-VPAIDCreative.prototype.eventSelected_ = function() {
+VpaidAd.prototype.eventSelected_ = function() {
   var clickThruParams = document.getElementById('AdClickThruOptions');
   var adErrorParams = document.getElementById('AdErrorOptions');
   var adLogParams = document.getElementById('AdLogOptions');
@@ -505,7 +549,7 @@ VPAIDCreative.prototype.eventSelected_ = function() {
  * @return {Boolean} True if this.eventCallbacks_ contains the callback.
  * @private
  */
-VPAIDCreative.prototype.isEventSubscribed_ = function(eventName) {
+VpaidAd.prototype.isEventSubscribed_ = function(eventName) {
   return typeof(this.eventCallbacks_[eventName]) === 'function';
 };
 
@@ -515,15 +559,21 @@ VPAIDCreative.prototype.isEventSubscribed_ = function(eventName) {
  *
  * @private
  */
-VPAIDCreative.prototype.fillProperties_ = function() {
+VpaidAd.prototype.fillProperties_ = function() {
   for (var key in this.attributes_) {
     var span = document.getElementById(key);
     span.textContent = this.attributes_[key];
   }
 };
 
-function getVPAIDAd() {
-    return new VPAIDCreative();
-}
+
+/**
+ * Main function called by wrapper to get the vpaid ad.
+ *
+ * @return {Object}
+ */
+var getVPAIDAd = function() {
+  return new VpaidAd();
+};
 
 window.getVPAIDAd = getVPAIDAd;
