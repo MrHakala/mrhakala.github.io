@@ -20,8 +20,6 @@ VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
     '<div style="height: 100%;' +
     '    display: inline-block; float:left;">' +
-    '<select id="eventSelect" size="10">' +
-    '</select>' +
     '</div>' +
     '<div>' +
     '<div>' +
@@ -106,34 +104,14 @@ VpaidAd.prototype.renderSlot_ = function() {
  * Adds all listeners to buttons.
  * @private
  */
-VpaidAd.prototype.addButtonListeners_ = function() {
-  var eventSelect = document.getElementById('eventSelect');
-  eventSelect.addEventListener('change', this.eventSelected_.bind(this));
-
-  var triggerEvent = document.getElementById('triggerEvent');
-  triggerEvent.addEventListener('click', this.triggerEvent_.bind(this));
-};
+VpaidAd.prototype.addButtonListeners_ = function() {};
 
 
 /**
  * Triggers an event.
  * @private
  */
-VpaidAd.prototype.triggerEvent_ = function() {
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
-  if (value == 'AdClickThru') {
-    this.adClickThruHandler_();
-  } else if (value == 'AdError') {
-    this.adErrorHandler_();
-  } else if (value == 'AdLog') {
-    this.adLogHandler_();
-  } else if (value == 'AdInteraction') {
-    this.adInteractionHandler_();
-  } else if (value in this.eventCallbacks_) {
-    this.eventCallbacks_[value]();
-  }
-};
+VpaidAd.prototype.triggerEvent_ = function() {};
 
 
 /**
@@ -416,17 +394,6 @@ VpaidAd.prototype.eventSelected_ = function() {
   adLogParams.style.display = 'none';
   adInteractionParams.style.display = 'none';
 
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
-  if (value == 'AdClickThru') {
-    clickThruParams.style.display = 'inline';
-  } else if (value == 'AdError') {
-    adErrorParams.style.display = 'inline';
-  } else if (value == 'AdLog') {
-    adLogParams.style.display = 'inline';
-  } else if (value == 'AdInteraction') {
-    adInteractionParams.style.display = 'inline';
-  }
 };
 
 
