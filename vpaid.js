@@ -19,7 +19,6 @@ var VpaidAd = function() {
     'linear' : true,
     'remainingTime' : 10,
     'skippableState' : false,
-    'volume' : 50
   };
 };
 
@@ -54,7 +53,6 @@ VpaidAd.HTML_TEMPLATE =
     '         <span id="skippableState">False</span></td>' +
     '  </tr>' +
     '  <tr>' +
-    '    <td><b>volume</b><br><span id="volume">1.0</span></td>' +
     '  </tr>' +
     '</table>' +
     '<div>' +
@@ -206,22 +204,13 @@ VpaidAd.prototype.stopAd = function() {
 /**
  * @param {number} value The volume in percentage.
  */
-VpaidAd.prototype.setAdVolume = function(value) {
-  this.attributes_['volume'] = value;
-  this.log('setAdVolume ' + value);
-  if ('AdVolumeChange' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdVolumeChange']();
-  }
-};
+VpaidAd.prototype.setAdVolume = function(value) {};
 
 
 /**
  * @return {number} The volume of the ad.
  */
-VpaidAd.prototype.getAdVolume = function() {
-  this.log('getAdVolume');
-  return this.attributes_['volume'];
-};
+VpaidAd.prototype.getAdVolume = function() {};
 
 
 /**
