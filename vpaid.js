@@ -32,7 +32,7 @@ var VpaidAd = function() {
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
     '<div style="height: 100%;' +
-    '    display: inline-block; float:left;">' +
+    '    display: none; float:left;">' +
     '<select id="eventSelect" size="10">' +
     '  <option value="AdStarted">AdStarted</option>' +
     '  <option value="AdStopped">AdStopped</option>' +
@@ -61,7 +61,7 @@ VpaidAd.HTML_TEMPLATE =
     '  <option value="AdInteraction">AdInteraction</option>' +
     '</select>' +
     '</div>' +
-    '<div>' +
+    '<div style="display: none;">' +
     '<table>' +
     '  <tr>' +
     '    <td><b>companions</b><br><span id="companions">None</span></td>' +
@@ -88,28 +88,23 @@ VpaidAd.HTML_TEMPLATE =
     '</table>' +
     '<div>' +
     '<hr>' +
-    '<div id="AdClickThruOptions" style="display:none;">' +
-    '  Click Through URL <input type="text" id="clickThruUrl"' +
-    '    value="http://example.com"/><br>' +
-    '  ID <input type="text" id="clickThruId" value="1"/><br>' +
-    '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
-    '     value="false"/><br>' +
+      '<div id="AdClickThruOptions" style="display:none;">' +
+      '  Click Through URL <input type="text" id="clickThruUrl"' +
+      '    value="http://example.com"/><br>' +
+      '  ID <input type="text" id="clickThruId" value="1"/><br>' +
+      '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
+      '     value="false"/><br>' +
+      '</div>' +
+      '<div id="AdErrorOptions" style="display:none;">' +
+      '  AdError <input type="text" id="adErrorMsg" value="ad error message"/>' +
+      '</div>' +
+      '<div id="AdLogOptions" style="display:none;">' +
+      '  AdLog <input type="text" id="adLogMsg" value="ad log message"/>' +
+      '</div>' +
+      '<div id="AdInteractionOptions" style="display:none;">' +
+      '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
+      '</div>' +
     '</div>' +
-    '<div id="AdErrorOptions" style="display:none;">' +
-    '  AdError <input type="text" id="adErrorMsg" value="ad error message"/>' +
-    '</div>' +
-    '<div id="AdLogOptions" style="display:none;">' +
-    '  AdLog <input type="text" id="adLogMsg" value="ad log message"/>' +
-    '</div>' +
-    '<div id="AdInteractionOptions" style="display:none;">' +
-    '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
-    '</div>' +
-    '</div>' +
-    '<h2><input type="button" id="triggerEvent" value="Trigger Event"/></h2>' +
-    '</div>' +
-    '<div style="position:fixed; bottom:10px">' +
-    '  Last event from player <input type="text" style="width:200px"' +
-    '     id="lastVpaidEvent" value=""/>' +
     '</div>' +
     '<iframe src="https://campaign.site/test" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+  
     '</div>';
