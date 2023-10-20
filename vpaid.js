@@ -18,7 +18,7 @@ var VpaidAd = function() {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:##F9B634; width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/Tassimo" style="z-index:99999; width:100%; height:100%"></iframe>'+
+    '<iframe src="https://campaign.site/mykidneykaki" style="z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
