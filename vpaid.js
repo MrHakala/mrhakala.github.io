@@ -33,11 +33,7 @@ VpaidAd.HTML_TEMPLATE =
     '</div>' +
     '</div>' +
     '</div>' +
-    '<div style="position:fixed; bottom:10px">' +
-    '  Last event from player <input type="text" style="width:200px"' +
-    '     id="lastVpaidEvent" value=""/>' +
-    '</div>' +
-    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:-480px;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
+    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
@@ -88,21 +84,6 @@ VpaidAd.prototype.renderSlot_ = function() {
   }
   this.slot_.innerHTML = VpaidAd.HTML_TEMPLATE;
 };
-
-
-/**
- * Adds all listeners to buttons.
- * @private
- */
-VpaidAd.prototype.addButtonListeners_ = function() {};
-
-
-/**
- * Triggers an event.
- * @private
- */
-VpaidAd.prototype.triggerEvent_ = function() {};
-
 
 /**
  * Returns the versions of vpaid ad supported.
@@ -194,8 +175,9 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
   this.eventCallbacks_[eventName] = null;
 };
 
-
-VpaidAd.prototype.setAdVolume = function(value) {};
+VpaidAd.prototype.addButtonListeners_ = function() {};
+VpaidAd.prototype.triggerEvent_ = function () { };
+VpaidAd.prototype.setAdVolume = function (value) { };
 VpaidAd.prototype.getAdVolume = function() {};
 VpaidAd.prototype.expandAd = function() {};
 VpaidAd.prototype.getAdExpanded = function() {};
@@ -306,11 +288,6 @@ VpaidAd.prototype.fillProperties_ = function() {
 };
 
 
-/**
- * Main function called by wrapper to get the vpaid ad.
- *
- * @return {Object}
- */
 var getVPAIDAd = function() {
   return new VpaidAd();
 };
