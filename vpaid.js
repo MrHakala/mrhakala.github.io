@@ -26,7 +26,7 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     'width' : 0,
     'volume' : 50
   };
-  
+
   this.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
     '<div style="height: 100%;' +
@@ -85,7 +85,7 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     '  </tr>' +
     '</table>' +
     '<div>';
-  
+
     var slotExists = this.slot && this.slot.tagName === 'DIV';
     if (!slotExists) {
       this.slot = document.createElement('div');
@@ -108,7 +108,19 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     this.anchor.style.backgroundColor = '#000';
     this.anchor.style.color = '#fff';
     this.anchor.style.textAlign = 'center';
-    this.slot.appendChild(this.anchor);
+  this.slot.appendChild(this.anchor);
+
+  this.attributes_['width'] = width;
+  this.attributes_['height'] = height;
+  this.attributes_['viewMode'] = viewMode;
+  this.attributes_['desiredBitrate'] = desiredBitrate;
+
+  this.log('initAd ' + width + 'x' + height +
+      ' ' + viewMode + ' ' + desiredBitrate);
+  this.addButtonListeners_();
+  this.fillProperties_();
+  this.eventCallbacks_['AdLoaded']();
+};
 }
 
 
