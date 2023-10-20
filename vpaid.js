@@ -18,9 +18,6 @@ var VpaidAd = function() {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:#108ccd; width:100%; height:100%">' +
-    '<div style="height: 100%;' +
-    '    display: inline-block; float:left;">' +
-    '</div>' +
     '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
