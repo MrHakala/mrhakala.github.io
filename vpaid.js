@@ -1,30 +1,30 @@
 var VPAIDCreative = function() {};
 
 VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitrate, creativeData, environmentVars) {
-    console.log('initAd', width, height, viewMode, desiredBitrate, creativeData, environmentVars);
-    // This method will be called by the video player.
-    // Here you can initialize your ad.
-    // slot is the div element where the ad is rendered
-    this.slot = environmentVars.slot;
-    // videoSlot is the object where any video element can be rendered
-    this.videoSlot = environmentVars.videoSlot;
-    //this._videoSlot.setAttribute('src', 'https://v.adserve.tv/pg/24.mp4');
+  console.log('initAd', width, height, viewMode, desiredBitrate, creativeData, environmentVars);
+  // This method will be called by the video player.
+  // Here you can initialize your ad.
+  // slot is the div element where the ad is rendered
+  this.slot = environmentVars.slot;
+  // videoSlot is the object where any video element can be rendered
+  this.videoSlot = environmentVars.videoSlot;
+  //this._videoSlot.setAttribute('src', 'https://v.adserve.tv/pg/24.mp4');
 
   this.eventCallbacks_ = {};
   // A list of attributes getable and setable.
   this.attributes_ = {
-    'companions' : '',
-    'desiredBitrate' : 256,
-    'duration' : 30,
-    'expanded' : false,
-    'height' : 0,
-    'icons' : '',
-    'linear' : true,
-    'remainingTime' : 10,
-    'skippableState' : false,
-    'viewMode' : 'normal',
-    'width' : 0,
-    'volume' : 50
+    'companions': '',
+    'desiredBitrate': 256,
+    'duration': 30,
+    'expanded': false,
+    'height': 0,
+    'icons': '',
+    'linear': true,
+    'remainingTime': 10,
+    'skippableState': false,
+    'viewMode': 'normal',
+    'width': 0,
+    'volume': 50
   };
 
   this.HTML_TEMPLATE =
@@ -86,28 +86,28 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
     '</table>' +
     '<div>';
 
-    var slotExists = this.slot && this.slot.tagName === 'DIV';
-    if (!slotExists) {
-      this.slot = document.createElement('div');
-      if (!document.body) {
-        document.body = /**@type {HTMLDocument}*/ document.createElement('body');
-      }
-      document.body.appendChild(this.slot);
+  var slotExists = this.slot && this.slot.tagName === 'DIV';
+  if (!slotExists) {
+    this.slot = document.createElement('div');
+    if (!document.body) {
+      document.body = /**@type {HTMLDocument}*/ document.createElement('body');
     }
-    this.slot_.innerHTML = this.HTML_TEMPLATE;
+    document.body.appendChild(this.slot);
+  }
+  this.slot_.innerHTML = this.HTML_TEMPLATE;
 
-    // Let's create a simple anchor element as our "ad"
-    this.anchor = document.createElement('a');
-    this.anchor.href = 'https://example.com';
-    this.anchor.target = '_blank';
-    this.anchor.textContent = 'Visit our site!';
-    this.anchor.style.display = 'block';
-    this.anchor.style.width = width + 'px';
-    this.anchor.style.height = height + 'px';
-    this.anchor.style.lineHeight = height + 'px';
-    this.anchor.style.backgroundColor = '#000';
-    this.anchor.style.color = '#fff';
-    this.anchor.style.textAlign = 'center';
+  // Let's create a simple anchor element as our "ad"
+  this.anchor = document.createElement('a');
+  this.anchor.href = 'https://example.com';
+  this.anchor.target = '_blank';
+  this.anchor.textContent = 'Visit our site!';
+  this.anchor.style.display = 'block';
+  this.anchor.style.width = width + 'px';
+  this.anchor.style.height = height + 'px';
+  this.anchor.style.lineHeight = height + 'px';
+  this.anchor.style.backgroundColor = '#000';
+  this.anchor.style.color = '#fff';
+  this.anchor.style.textAlign = 'center';
   this.slot.appendChild(this.anchor);
 
   this.attributes_['width'] = width;
@@ -116,12 +116,11 @@ VPAIDCreative.prototype.initAd = function (width, height, viewMode, desiredBitra
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
   this.log('initAd ' + width + 'x' + height +
-      ' ' + viewMode + ' ' + desiredBitrate);
+    ' ' + viewMode + ' ' + desiredBitrate);
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
 };
-}
 
 
 /**
