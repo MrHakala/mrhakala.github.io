@@ -18,7 +18,7 @@ var VpaidAd = function() {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:##F9B634; width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/sparebank1" style="z-index:99999; width:100%; height:100%;"></iframe>'+
+    '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
 
