@@ -23,17 +23,9 @@ VpaidAd.HTML_TEMPLATE =
     '</div>' +
     '<div>' +
     '<div>' +
-    '<hr>' +
-    '<div id="AdClickThruOptions" style="display:none;">' +
-    '  Click Through URL <input type="text" id="clickThruUrl"' +
-    '    value="http://example.com"/><br>' +
-    '  ID <input type="text" id="clickThruId" value="1"/><br>' +
-    '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
-    '     value="false"/><br>' +
     '</div>' +
     '</div>' +
-    '</div>' +
-    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
+    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
@@ -200,22 +192,7 @@ VpaidAd.prototype.eventSelected_ = function() {};
  *
  * @private
  */
-VpaidAd.prototype.adClickThruHandler_ = function() {
-  if (!this.isEventSubscribed_('AdClickThru')) {
-    this.log('Error: AdClickThru function callback not subscribed.');
-    return;
-  }
-  var clickThruUrl = document.getElementById('clickThruUrl').value;
-  var clickThruId = document.getElementById('clickThruId').value;
-  var clickThruPlayerHandles =
-      document.getElementById('clickThruPlayerHandels').value;
-  this.log('AdClickThu(' + clickThruUrl + ',' +
-      clickThruId + ',' + clickThruPlayerHandles + ')');
-  this.eventCallbacks_['AdClickThru'](
-      clickThruUrl,
-      clickThruId,
-      clickThruPlayerHandles);
-};
+VpaidAd.prototype.adClickThruHandler_ = function() {};
 
 
 /**
