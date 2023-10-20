@@ -105,7 +105,6 @@ VpaidAd.HTML_TEMPLATE =
       '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
       '</div>' +
     '</div>' +
-    '</div>' +
     '<iframe src="https://campaign.site/test" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+  
     '</div>';
 
