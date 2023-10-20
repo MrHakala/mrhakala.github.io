@@ -17,7 +17,7 @@ var VpaidAd = function() {
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
 VpaidAd.HTML_TEMPLATE =
-    '<div style="background:##F9B634; width:100%; height:100%">' +
+    '<div style="background:#ffffff; width:100%; height:100%">' +
     '<iframe src="https://campaign.site/mykidneykaki" style="z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
