@@ -31,23 +31,13 @@ VpaidAd.HTML_TEMPLATE =
     '  Player Handles <input type="text" id="clickThruPlayerHandels"' +
     '     value="false"/><br>' +
     '</div>' +
-    '<div id="AdErrorOptions" style="display:none;">' +
-    '  AdError <input type="text" id="adErrorMsg" value="ad error message"/>' +
     '</div>' +
-    '<div id="AdLogOptions" style="display:none;">' +
-    '  AdLog <input type="text" id="adLogMsg" value="ad log message"/>' +
-    '</div>' +
-    '<div id="AdInteractionOptions" style="display:none;">' +
-    '  AdInteraction <input type="text" id="adInteractionId" value="1"/>' +
-    '</div>' +
-    '</div>' +
-    '<h2><input type="button" id="triggerEvent" value="Trigger Event"/></h2>' +
     '</div>' +
     '<div style="position:fixed; bottom:10px">' +
     '  Last event from player <input type="text" style="width:200px"' +
     '     id="lastVpaidEvent" value=""/>' +
     '</div>' +
-    '<iframe src="https://campaign.site/test" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
+    '<iframe src="https://campaign.site/mrsdoubtfiremusical" style="top:0;position:absolute;z-index:99999; width:100%; height:100%"></iframe>'+
     '</div>';
 
 
@@ -384,17 +374,7 @@ VpaidAd.prototype.adInteractionHandler_ = function() {
  *
  * @private
  */
-VpaidAd.prototype.eventSelected_ = function() {
-  var clickThruParams = document.getElementById('AdClickThruOptions');
-  var adErrorParams = document.getElementById('AdErrorOptions');
-  var adLogParams = document.getElementById('AdLogOptions');
-  var adInteractionParams = document.getElementById('AdInteractionOptions');
-  clickThruParams.style.display = 'none';
-  adErrorParams.style.display = 'none';
-  adLogParams.style.display = 'none';
-  adInteractionParams.style.display = 'none';
-
-};
+VpaidAd.prototype.eventSelected_ = function() {};
 
 
 /**
