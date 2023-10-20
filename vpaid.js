@@ -13,9 +13,6 @@ var VpaidAd = function() {
     'companions' : '',
     'desiredBitrate' : 256,
     'duration' : 30,
-    'expanded' : false,
-    'height' : 0,
-    'icons' : '',
   };
 };
 
@@ -37,11 +34,6 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>desired bitrate</b><br>' +
     '       <span id="desiredBitrate">-1</span></td>' +
     '    <td><b>duration</b><br><span id="duration">-1</span></td>' +
-    '  </tr>' +
-    '  <tr>' +
-    '    <td><b>expanded</b><br><span id="expanded">false</span></td>' +
-    '    <td><b>height</b><br><span id="height">-1</span></td>' +
-    '    <td><b>icons</b><br><span id="icons">None</span></td>' +
     '  </tr>' +
     '</table>' +
     '<div>' +
@@ -95,7 +87,6 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  this.attributes_['height'] = height;
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
   this.log('initAd ' + width + 'x' + height +
@@ -209,7 +200,6 @@ VpaidAd.prototype.getAdVolume = function() {};
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  this.attributes_['height'] = height;
   if ('AdSizeChange' in this.eventCallbacks_) {
     this.eventCallbacks_['AdSizeChange']();
   }
@@ -241,13 +231,7 @@ VpaidAd.prototype.resumeAd = function() {
 /**
  * Expands the ad.
  */
-VpaidAd.prototype.expandAd = function() {
-  this.log('expandAd');
-  this.attributes_['expanded'] = true;
-  if ('AdExpanded' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdExpanded']();
-  }
-};
+VpaidAd.prototype.expandAd = function() {};
 
 
 /**
@@ -255,10 +239,7 @@ VpaidAd.prototype.expandAd = function() {
  *
  * @return {boolean}
  */
-VpaidAd.prototype.getAdExpanded = function() {
-  this.log('getAdExpanded');
-  return this.attributes_['expanded'];
-};
+VpaidAd.prototype.getAdExpanded = function() {};
 
 
 /**
@@ -272,10 +253,7 @@ VpaidAd.prototype.getAdSkippableState = function() {};
 /**
  * Collapses the ad.
  */
-VpaidAd.prototype.collapseAd = function() {
-  this.log('collapseAd');
-  this.attributes_['expanded'] = false;
-};
+VpaidAd.prototype.collapseAd = function() {};
 
 
 /**
@@ -319,9 +297,7 @@ VpaidAd.prototype.getAdWidth = function() {
 /**
  * @return {number} The ad height.
  */
-VpaidAd.prototype.getAdHeight = function() {
-  return this.attributes_['height'];
-};
+VpaidAd.prototype.getAdHeight = function() {};
 
 
 /**
@@ -349,9 +325,7 @@ VpaidAd.prototype.getAdCompanions = function() {
 /**
  * @return {string} A list of icons.
  */
-VpaidAd.prototype.getAdIcons = function() {
-  return this.attributes_['icons'];
-};
+VpaidAd.prototype.getAdIcons = function() {};
 
 
 /**
