@@ -9,11 +9,7 @@ var VpaidAd = function() {
   // callbacks from the vpaid ad.
   this.eventCallbacks_ = {};
   // A list of attributes getable and setable.
-  this.attributes_ = {
-    'companions' : '',
-    'desiredBitrate' : 256,
-    'duration' : 30,
-  };
+  this.attributes_ = {};
 };
 
 
@@ -28,14 +24,6 @@ VpaidAd.HTML_TEMPLATE =
     '</select>' +
     '</div>' +
     '<div>' +
-    '<table>' +
-    '  <tr>' +
-    '    <td><b>companions</b><br><span id="companions">None</span></td>' +
-    '    <td><b>desired bitrate</b><br>' +
-    '       <span id="desiredBitrate">-1</span></td>' +
-    '    <td><b>duration</b><br><span id="duration">-1</span></td>' +
-    '  </tr>' +
-    '</table>' +
     '<div>' +
     '<hr>' +
     '<div id="AdClickThruOptions" style="display:none;">' +
@@ -87,7 +75,6 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  this.attributes_['desiredBitrate'] = desiredBitrate;
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
@@ -309,17 +296,13 @@ VpaidAd.prototype.getAdRemainingTime = function() {};
 /**
  * @return {number} The duration of the ad.
  */
-VpaidAd.prototype.getAdDuration = function() {
-  return this.attributes_['duration'];
-};
+VpaidAd.prototype.getAdDuration = function() {};
 
 
 /**
  * @return {string} List of companions in vast xml.
  */
-VpaidAd.prototype.getAdCompanions = function() {
-  return this.attributes_['companions'];
-};
+VpaidAd.prototype.getAdCompanions = function() {};
 
 
 /**
