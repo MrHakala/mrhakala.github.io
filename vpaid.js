@@ -38,7 +38,6 @@ VpaidAd.HTML_TEMPLATE =
     '  <option value="AdStopped">AdStopped</option>' +
     '  <option value="AdLoaded">AdLoaded</option>' +
     '  <option value="AdLinearChange">AdLinearChange</option>' +
-    '  <option value="AdSizeChange">AdSizeChange</option>' +
     '  <option value="AdVolumeChange">AdVolumeChange</option>' +
     '  <option value="AdImpression">AdImpression</option>' +
     '  <option value="AdUserAcceptInvitation">AdUserAcceptInvitation</option>' +
