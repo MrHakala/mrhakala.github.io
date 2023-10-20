@@ -19,7 +19,6 @@ var VpaidAd = function() {
     'linear' : true,
     'remainingTime' : 10,
     'skippableState' : false,
-    'viewMode' : 'normal',
     'width' : 0,
     'volume' : 50
   };
@@ -54,6 +53,10 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>remaining time</b><br><span id="remainingTime">-1</span></td>' +
     '    <td><b>skippable state</b><br>' +
     '         <span id="skippableState">False</span></td>' +
+    '  </tr>' +
+    '  <tr>' +
+    '    <td><b>volume</b><br><span id="volume">1.0</span></td>' +
+    '    <td><b>width</b><br><span id="width">5</span></td>' +
     '  </tr>' +
     '</table>' +
     '<div>' +
@@ -109,7 +112,6 @@ VpaidAd.prototype.initAd = function(
   this.videoSlot_ = environmentVars.videoSlot;
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
-  this.attributes_['viewMode'] = viewMode;
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
   this.log('initAd ' + width + 'x' + height +
@@ -234,7 +236,6 @@ VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
-  this.attributes_['viewMode'] = viewMode;
   if ('AdSizeChange' in this.eventCallbacks_) {
     this.eventCallbacks_['AdSizeChange']();
   }
