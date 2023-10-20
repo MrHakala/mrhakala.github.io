@@ -55,11 +55,6 @@ VpaidAd.HTML_TEMPLATE =
     '    <td><b>skippable state</b><br>' +
     '         <span id="skippableState">False</span></td>' +
     '  </tr>' +
-    '  <tr>' +
-    '    <td><b>volume</b><br><span id="volume">1.0</span></td>' +
-    '    <td><b>view mode</b><br><span id="viewMode">normal</span></td>' +
-    '    <td><b>width</b><br><span id="width">5</span></td>' +
-    '  </tr>' +
     '</table>' +
     '<div>' +
     '<hr>' +
