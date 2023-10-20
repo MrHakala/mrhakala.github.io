@@ -18,9 +18,6 @@ var VpaidAd = function() {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="background:#f5f5f5; width:100%; height:100%">' +
-    '<div style="height: 100%;' +
-    '    display: inline-block; float:left;">' +
-    '</div>' +
     '<div>' +
     '<div>' +
     '<hr>' +
@@ -79,7 +76,7 @@ VpaidAd.prototype.initAd = function(
   this.renderSlot_();
   this.addButtonListeners_();
   this.fillProperties_();
-  this.eventCallbacks_['AdLoaded']();
+  this.emit('AdLoaded');
 };
 
 
