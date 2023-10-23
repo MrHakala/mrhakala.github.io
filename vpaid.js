@@ -66,6 +66,7 @@ VpaidAd.prototype.initAd = function(
 
 VpaidAd.prototype.CREATIVE = function () {
   return `
+<div style="width:100%; height:100%">
 <iframe srcdoc="<html><body>
 <script
   data-creative-id='{CREATIVE_ID}'
@@ -81,7 +82,8 @@ VpaidAd.prototype.CREATIVE = function () {
   document.head.appendChild(s);
 })();
 </script></body>/<html>"
-style="z-index:99999; width:640px; height:360px;">
+style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
+</div>
 `;
 }
 
