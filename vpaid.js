@@ -72,8 +72,6 @@ VpaidAd.prototype.initAd = function(
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
   this.renderSlot_();
-  this.addButtonListeners_();
-  this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
   this.log(this.adParameters_);
