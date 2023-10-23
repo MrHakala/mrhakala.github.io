@@ -65,16 +65,20 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
+    try {
+        // Get object
+        AdParameters = JSON.parse(creativeData.AdParameters || creativeData);
+    } catch(e) {}
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.renderSlot_(creativeData);
+  this.renderSlot_(AdParameters);
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
-  this.log(creativeData);
-  this.log(creativeData['AdParameters']['CREATIVE_SRC']);
+  this.log(AdParameters.CREATIVE_SRC);
+  this.log(AdParameters.CREATIVE_SRC);
   this.log(environmentVars);
 };
 
@@ -83,7 +87,7 @@ VpaidAd.prototype.initAd = function(
  * Populates the inner html of the slot.
  * @private
  */
-VpaidAd.prototype.renderSlot_ = function(creativeData) {
+VpaidAd.prototype.renderSlot_ = function(AdParameters) {
   var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
@@ -92,7 +96,7 @@ VpaidAd.prototype.renderSlot_ = function(creativeData) {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', creativeData['AdParameters']['CREATIVE_SRC']);
+  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', AdParameters.CREATIVE_SRC);
 };
 
 /**
