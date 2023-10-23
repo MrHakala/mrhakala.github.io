@@ -24,6 +24,27 @@ VpaidAd.HTML_TEMPLATE =
     '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
+VpaidAd.CREATIVE =
+`
+<div style="width:100%; height:100%">
+<iframe srcdoc="<html><body>
+<script
+  data-creative-id='50271-50352-50421-53802'
+  data-timestamp='2023-05-24T08:09:14.135Z'
+>
+(function() {
+  var s   = document.createElement('script');
+  s.src   = '{CREATIVE_SRC}?bust='+Date.now();
+  s.async = true;
+  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
+  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
+  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  document.head.appendChild(s);
+})();
+</script></body>/<html>" width="300px" height="300px">
+</div>
+`
+
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
  * not start until startAd is called.
@@ -43,49 +64,22 @@ VpaidAd.prototype.initAd = function(
     desiredBitrate,
     creativeData,
     environmentVars) {
-  this.attributes_['width'] = width;
-  this.attributes_['height'] = height;
-  this.attributes_['viewMode'] = viewMode;
-  this.attributes_['desiredBitrate'] = desiredBitrate;
+  // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  this.adParameters_ = JSON.parse(creativeData.AdParameters);
+  try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
 
-  this.log(this.attributes_);
-  this.log(this.adParameters_);
-  this.log(environmentVars);
   this.log('initAd ' + width + 'x' + height +
-    ' ' + viewMode + ' ' + desiredBitrate);
-  this.log(this.CREATIVE());
+      ' ' + viewMode + ' ' + desiredBitrate);
   this.renderSlot_();
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
+  this.log(this.adParameters_);
+  this.log(environmentVars);
 };
 
-VpaidAd.prototype.CREATIVE = function () {
-  return `
-<div style="width:100%; height:100%">
-<iframe srcdoc="<html><body>
-<script
-  data-creative-id='{CREATIVE_ID}'
-  data-timestamp='2023-05-24T08:09:14.135Z'
->
-(function() {
-  var s   = document.createElement('script');
-  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
-  s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
-  document.head.appendChild(s);
-})();
-</script></body>/<html>"
-style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
-</div>
-`;
-}
 
 /**
  * Populates the inner html of the slot.
@@ -100,7 +94,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = this.CREATIVE();
+  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', this.adParameters_.CREATIVE_SRC);
 };
 
 /**
