@@ -26,8 +26,7 @@ VpaidAd.HTML_TEMPLATE =
 
 VpaidAd.CREATIVE =
 `
-<div style="width:100%; height:100%">
-<iframe srcdoc="<html><body>
+<iframe srcdoc="<html><body style='margin:0'>
 <script
   data-creative-id='{CREATIVE_ID}'
   data-timestamp='2023-05-24T08:09:14.135Z'
@@ -41,8 +40,7 @@ VpaidAd.CREATIVE =
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" style="z-index:99999; width:100%; height:100%;">
-</div>
+</script></body>/<html>" style="z-index:99999; width:{width}px; height:{height}px;">
 `
 
 /**
@@ -64,7 +62,10 @@ VpaidAd.prototype.initAd = function(
     desiredBitrate,
     creativeData,
     environmentVars) {
-  // slot and videoSlot are passed as part of the environmentVars
+  this.attributes_['width'] = width;
+  this.attributes_['height'] = height;
+  this.attributes_['viewMode'] = viewMode;
+  this.attributes_['desiredBitrate'] = desiredBitrate;
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
@@ -94,7 +95,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', this.adParameters_.CREATIVE_SRC);
+  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', this.adParameters_.CREATIVE_SRC).replace('{width}', this.attributes_.width).replace('{height}', this.attributes_.height);
 };
 
 /**
