@@ -67,18 +67,19 @@ VpaidAd.prototype.initAd = function(
   this.videoSlot_ = environmentVars.videoSlot;
     try {
         // Get object
-        AdParameters = JSON.parse(creativeData.AdParameters || creativeData);
+        this.adParameters = JSON.parse(creativeData.AdParameters || creativeData);
     } catch(e) {}
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.renderSlot_(AdParameters);
+  this.renderSlot_(this.adParameters);
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
-  this.log(AdParameters.CREATIVE_SRC);
-  this.log(AdParameters.CREATIVE_SRC);
+  this.log(creativeData);
+  this.log(this.adParameters);
+  this.log(this.adParameters.CREATIVE_SRC);
   this.log(environmentVars);
 };
 
