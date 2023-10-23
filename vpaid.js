@@ -27,8 +27,9 @@ VpaidAd.HTML_TEMPLATE =
 VpaidAd.CREATIVE =
 `
 <div style="width:100%; height:100%">
+<iframe srcdoc="<html><body>
 <script
-  data-creative-id='50271-50352-50421-53802'
+  data-creative-id='{CREATIVE_ID}'
   data-timestamp='2023-05-24T08:09:14.135Z'
 >
 (function() {
@@ -40,7 +41,7 @@ VpaidAd.CREATIVE =
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script>
+</script></body>/<html>" style="z-index:99999; width:100%; height:100%;">
 </div>
 `
 
@@ -66,7 +67,7 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  this.adParameters_ = JSON.parse(creativeData.AdParameters);
+  try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
@@ -75,9 +76,7 @@ VpaidAd.prototype.initAd = function(
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
-  this.log(creativeData);
   this.log(this.adParameters_);
-  this.log(this.adParameters_.CREATIVE_SRC);
   this.log(environmentVars);
 };
 
