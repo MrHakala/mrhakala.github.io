@@ -1,4 +1,6 @@
-var VpaidAd = function() {
+//https://github.com/ryanthompson591/vpaidExamples/blob/master/playVideo/VpaidVideoAd.js
+
+var VpaidAd = function () {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
@@ -52,6 +54,8 @@ VpaidAd.prototype.initAd = function(
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
+  this.log(creativeData);
+  this.log(environmentVars);
 };
 
 
@@ -161,8 +165,6 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
   this.eventCallbacks_[eventName] = null;
 };
 
-VpaidAd.prototype.addButtonListeners_ = function() {};
-VpaidAd.prototype.triggerEvent_ = function () { };
 VpaidAd.prototype.setAdVolume = function (value) { };
 VpaidAd.prototype.getAdVolume = function() {};
 VpaidAd.prototype.expandAd = function() {};
