@@ -24,27 +24,6 @@ VpaidAd.HTML_TEMPLATE =
     '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
-VpaidAd.CREATIVE = function () {
-  return `
-<iframe srcdoc="<html><body>
-<script
-  data-creative-id='{CREATIVE_ID}'
-  data-timestamp='2023-05-24T08:09:14.135Z'
->
-(function() {
-  var s   = document.createElement('script');
-  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
-  s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
-  document.head.appendChild(s);
-})();
-</script></body>/<html>"
-style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
-`
-}
-
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
  * not start until startAd is called.
@@ -84,6 +63,26 @@ VpaidAd.prototype.initAd = function(
   this.log(environmentVars);
 };
 
+VpaidAd.prototype.CREATIVE = function () {
+  return `
+<iframe srcdoc="<html><body>
+<script
+  data-creative-id='{CREATIVE_ID}'
+  data-timestamp='2023-05-24T08:09:14.135Z'
+>
+(function() {
+  var s   = document.createElement('script');
+  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
+  s.async = true;
+  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
+  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
+  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  document.head.appendChild(s);
+})();
+</script></body>/<html>"
+style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
+`
+}
 
 /**
  * Populates the inner html of the slot.
@@ -98,7 +97,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.CREATIVE();
+  this.slot_.innerHTML = this.CREATIVE();
 };
 
 /**
