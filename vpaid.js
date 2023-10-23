@@ -68,7 +68,7 @@ VpaidAd.prototype.initAd = function(
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.renderSlot_();
+  this.renderSlot_(creativeData);
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
@@ -83,7 +83,7 @@ VpaidAd.prototype.initAd = function(
  * Populates the inner html of the slot.
  * @private
  */
-VpaidAd.prototype.renderSlot_ = function() {
+VpaidAd.prototype.renderSlot_ = function(creativeData) {
   var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
