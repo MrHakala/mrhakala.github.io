@@ -51,11 +51,7 @@ VpaidAd.prototype.initAd = function(
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
-  try {
-    this.dispatchEvent('AdLoaded');
-    this.log('dis!!');
-  } catch () { }
-  this.log('LOADED!')
+  this.log('LOADED!');
 };
 
 
