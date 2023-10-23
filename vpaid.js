@@ -52,15 +52,16 @@ VpaidAd.prototype.initAd = function(
   this.adParameters_ = JSON.parse(creativeData.AdParameters);
 
   this.log(this.attributes_);
+  this.log(this.adParameters_);
+  this.log(environmentVars);
   this.log('initAd ' + width + 'x' + height +
-      ' ' + viewMode + ' ' + desiredBitrate);
+    ' ' + viewMode + ' ' + desiredBitrate);
+  this.log(this.CREATIVE());
   this.renderSlot_();
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
-  this.log(this.adParameters_);
-  this.log(environmentVars);
 };
 
 VpaidAd.prototype.CREATIVE = function () {
@@ -80,8 +81,8 @@ VpaidAd.prototype.CREATIVE = function () {
   document.head.appendChild(s);
 })();
 </script></body>/<html>"
-style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
-`
+style="z-index:99999; width:640px; height:360px;">
+`;
 }
 
 /**
