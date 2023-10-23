@@ -52,6 +52,8 @@ VpaidAd.prototype.initAd = function(
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.emit('AdLoaded');
+  this.dispatchEvent('AdLoaded');
+  this.log('dis!!');
 };
 
 
@@ -177,16 +179,14 @@ VpaidAd.prototype.getAdDuration = function() {};
 VpaidAd.prototype.getAdCompanions = function() {};
 VpaidAd.prototype.getAdIcons = function() {};
 VpaidAd.prototype.getAdLinear = function() {};
-VpaidAd.prototype.log = function(message) {};
 VpaidAd.prototype.eventSelected_ = function() {};
-
-
-/**
- * Callback for AdClickThru button.
- *
- * @private
- */
 VpaidAd.prototype.adClickThruHandler_ = function() {};
+
+VpaidAd.prototype.log = function (message) {
+  if (location.search.includes('inTesting')) {
+    console.log(message);
+  }
+};
 
 
 /**
