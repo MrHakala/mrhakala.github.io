@@ -41,7 +41,7 @@ VpaidAd.CREATIVE =
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="300px" height="300px">
+</script></body>/<html>" width="640px" height="360px">
 </div>
 `
 
@@ -228,76 +228,6 @@ VpaidAd.prototype.adClickThruHandler_ = function() {};
 
 VpaidAd.prototype.log = function (message) {
   console.log(message);
-};
-
-
-/**
- * Callback for AdError button.
- *
- * @private
- */
-VpaidAd.prototype.adErrorHandler_ = function() {
-  if (!this.isEventSubscribed_('AdError')) {
-    this.log('AdError function callback not subscribed.');
-    return;
-  }
-  var adError = document.getElementById('adErrorMsg').value;
-  this.log('adError(' + adError + ')');
-  this.eventCallbacks_['AdError'](adError);
-};
-
-
-/**
- * Callback for AdLogMsg button.
- *
- * @private
- */
-VpaidAd.prototype.adLogHandler_ = function() {
-  if (!this.isEventSubscribed_('AdLog')) {
-    this.log('Error: AdLog function callback not subscribed.');
-    return;
-  }
-  var adLogMsg = document.getElementById('adLogMsg').value;
-  this.log('adLog(' + adLogMsg + ')');
-  this.eventCallbacks_['AdLog'](adLogMsg);
-};
-
-
-/**
- * Callback for AdInteraction button.
- *
- * @private
- */
-VpaidAd.prototype.adInteractionHandler_ = function() {
-  if (!this.isEventSubscribed_('AdInteraction')) {
-    this.log('Error: AdInteraction function callback not subscribed.');
-    return;
-  }
-  var adInteraction = document.getElementById('adInteractionId').value;
-  this.log('adLog(' + adInteraction + ')');
-  this.eventCallbacks_['AdInteraction'](adInteraction);
-};
-
-/**
- * @param {string} eventName
- * @return {Boolean} True if this.eventCallbacks_ contains the callback.
- * @private
- */
-VpaidAd.prototype.isEventSubscribed_ = function(eventName) {
-  return typeof(this.eventCallbacks_[eventName]) === 'function';
-};
-
-
-/**
- * Populates all of the vpaid ad properties.
- *
- * @private
- */
-VpaidAd.prototype.fillProperties_ = function() {
-  for (var key in this.attributes_) {
-    var span = document.getElementById(key);
-    span.textContent = this.attributes_[key];
-  }
 };
 
 var getVPAIDAd = function() {
