@@ -51,6 +51,7 @@ VpaidAd.prototype.initAd = function(
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
+  this.emit('AdLoaded');
 };
 
 
