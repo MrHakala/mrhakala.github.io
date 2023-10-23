@@ -81,6 +81,27 @@ VpaidAd.prototype.initAd = function(
 };
 
 
+VpaidAd.prototype.creative_ = function () {
+  return `
+<div style="width:100%; height:100%">
+<iframe srcdoc="<html><body>
+<script
+  data-creative-id='50271-50352-50421-53802'
+  data-timestamp='2023-05-24T08:09:14.135Z'
+>
+(function() {
+  var s   = document.createElement('script');
+  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
+  s.async = true;
+  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
+  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
+  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  document.head.appendChild(s);
+})();
+</script></body>/<html>" width="300px" height="300px">
+</div>
+`;
+}
 /**
  * Populates the inner html of the slot.
  * @private
@@ -94,7 +115,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', this.adParameters_.CREATIVE_SRC);
+  this.slot_.innerHTML = this.creative_();
 };
 
 /**
