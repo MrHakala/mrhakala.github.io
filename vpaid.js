@@ -24,27 +24,6 @@ VpaidAd.HTML_TEMPLATE =
     '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
-VpaidAd.CREATIVE =
-`
-<div style="width:100%; height:100%">
-<iframe srcdoc="<html><body>
-<script
-  data-creative-id='50271-50352-50421-53802'
-  data-timestamp='2023-05-24T08:09:14.135Z'
->
-(function() {
-  var s   = document.createElement('script');
-  s.src   = '{CREATIVE_SRC}?bust='+Date.now();
-  s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
-  document.head.appendChild(s);
-})();
-</script></body>/<html>" width="640px" height="360px">
-</div>
-`
-
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
  * not start until startAd is called.
@@ -96,10 +75,11 @@ VpaidAd.prototype.creative_ = function () {
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="300px" height="300px">
+</script></body>/<html>" width="640px" height="360px">
 </div>
 `;
 }
+
 /**
  * Populates the inner html of the slot.
  * @private
