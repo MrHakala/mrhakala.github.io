@@ -12,6 +12,7 @@ var VpaidAd = function () {
   this.eventCallbacks_ = {};
   // A list of attributes getable and setable.
   this.attributes_ = {};
+  this.adParameters_ = {};
 };
 
 
@@ -65,21 +66,20 @@ VpaidAd.prototype.initAd = function(
   // slot and videoSlot are passed as part of the environmentVars
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-    try {
-        // Get object
-        this.adParameters = JSON.parse(creativeData.AdParameters || creativeData);
-    } catch(e) {}
+  try {
+      this.adParameters_ = JSON.parse(creativeData.AdParameters || creativeData);
+  } catch(e) {}
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.renderSlot_(this.adParameters);
+  this.renderSlot_(this.adParameters_);
   this.addButtonListeners_();
   this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
   this.log(creativeData);
-  this.log(this.adParameters);
-  this.log(this.adParameters.CREATIVE_SRC);
+  this.log(this.adParameters_);
+  this.log(this.adParameters_.CREATIVE_SRC);
   this.log(environmentVars);
 };
 
