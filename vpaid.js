@@ -67,6 +67,8 @@ VpaidAd.prototype.initAd = function(
 
   this.attributes_.width = width;
   this.attributes_.height = height;
+  
+  this.log(this.attributes_);
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
@@ -100,7 +102,7 @@ VpaidAd.prototype.creative_ = function () {
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="${this.attributes_.width}px" height="${this.attributes_.height}px">
+</script></body>/<html>" width="640px" height="340px">
 </div>
 `;
 }
