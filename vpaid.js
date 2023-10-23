@@ -43,28 +43,32 @@ VpaidAd.prototype.initAd = function(
     desiredBitrate,
     creativeData,
     environmentVars) {
-  // slot and videoSlot are passed as part of the environmentVars
+  this.attributes_['width'] = width;
+  this.attributes_['height'] = height;
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
 
-  this.log('initAd ' + width + 'x' + height +
-      ' ' + viewMode + ' ' + desiredBitrate);
+  this.log('initAd ' + this.attributes_['width'] + 'x' + height +
+    ' ' + viewMode + ' ' + desiredBitrate);
+  
   this.renderSlot_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
   this.log(this.adParameters_);
   this.log(environmentVars);
+  this.log(`initAd ${this.attributes_['width']}`);
+
 };
 
 
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
-<iframe srcdoc="<html><body>
+<iframe srcdoc="<html><body style='margin:0'>
 <script
-  data-creative-id='50271-50352-50421-53802'
-  data-timestamp='2023-05-24T08:09:14.135Z'
+  data-creative-id='X-X-X-X'
+  data-timestamp=''
 >
 (function() {
   var s   = document.createElement('script');
@@ -186,7 +190,6 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
   this.eventCallbacks_[eventName] = null;
 };
 
-VpaidAd.prototype.addButtonListeners_ = function() {};
 VpaidAd.prototype.setAdVolume = function (value) { };
 VpaidAd.prototype.getAdVolume = function() {};
 VpaidAd.prototype.expandAd = function() {};
@@ -201,8 +204,6 @@ VpaidAd.prototype.getAdDuration = function() {};
 VpaidAd.prototype.getAdCompanions = function() {};
 VpaidAd.prototype.getAdIcons = function() {};
 VpaidAd.prototype.getAdLinear = function() {};
-VpaidAd.prototype.eventSelected_ = function() {};
-VpaidAd.prototype.adClickThruHandler_ = function() {};
 
 VpaidAd.prototype.log = function (message) {
   console.log(message);
