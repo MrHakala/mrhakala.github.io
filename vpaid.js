@@ -165,6 +165,7 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
   this.eventCallbacks_[eventName] = null;
 };
 
+VpaidAd.prototype.addButtonListeners_ = function() {};
 VpaidAd.prototype.setAdVolume = function (value) { };
 VpaidAd.prototype.getAdVolume = function() {};
 VpaidAd.prototype.expandAd = function() {};
