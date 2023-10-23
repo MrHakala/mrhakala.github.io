@@ -181,9 +181,7 @@ VpaidAd.prototype.eventSelected_ = function() {};
 VpaidAd.prototype.adClickThruHandler_ = function() {};
 
 VpaidAd.prototype.log = function (message) {
-  if (location.search.includes('inTesting')) {
-    console.log(message);
-  }
+  console.log(message);
 };
 
 
