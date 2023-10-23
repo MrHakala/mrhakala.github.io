@@ -26,7 +26,7 @@ VpaidAd.HTML_TEMPLATE =
 
 VpaidAd.CREATIVE =
 `
-<iframe srcdoc="<html><body style='margin:0'>
+<iframe srcdoc="<html><body>
 <script
   data-creative-id='{CREATIVE_ID}'
   data-timestamp='2023-05-24T08:09:14.135Z'
@@ -68,8 +68,9 @@ VpaidAd.prototype.initAd = function(
   this.attributes_['desiredBitrate'] = desiredBitrate;
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
-  try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
+  this.adParameters_ = JSON.parse(creativeData.AdParameters);
 
+  this.log(this.attributes_);
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
   this.renderSlot_();
