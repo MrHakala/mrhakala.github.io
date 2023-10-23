@@ -24,8 +24,8 @@ VpaidAd.HTML_TEMPLATE =
     '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
-VpaidAd.CREATIVE =
-`
+VpaidAd.CREATIVE = function () {
+  return `
 <iframe srcdoc="<html><body>
 <script
   data-creative-id='{CREATIVE_ID}'
@@ -33,15 +33,17 @@ VpaidAd.CREATIVE =
 >
 (function() {
   var s   = document.createElement('script');
-  s.src   = '{CREATIVE_SRC}?bust='+Date.now();
+  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
   s.async = true;
   s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" style="z-index:99999; width:{width}px; height:{height}px;">
+</script></body>/<html>"
+style="z-index:99999; width:${this.attributes_.width}px; height:${this.attributes_.height}px;">
 `
+}
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
@@ -96,7 +98,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.CREATIVE.replace('{CREATIVE_SRC}', this.adParameters_.CREATIVE_SRC).replace('{width}', this.attributes_.width).replace('{height}', this.attributes_.height);
+  this.slot_.innerHTML = VpaidAd.CREATIVE();
 };
 
 /**
