@@ -79,7 +79,7 @@ VpaidAd.prototype.creative_ = function () {
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="${this.adParameters_.AD_WIDTH}px" height="${this.adParameters_.AD_HEIGHT}px">
+</script></body>/<html>" style="z-index:99999; width:100%; height:100%;">
 </div>
 `;
 }
