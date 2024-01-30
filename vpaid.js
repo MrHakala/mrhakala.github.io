@@ -65,7 +65,6 @@ VpaidAd.prototype.initAd = function(
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
-<video></video>
 <iframe srcdoc="<html><body style='margin:0'>
 <script
   data-creative-id='${this.adParameters_.CREATIVE_ID}'
