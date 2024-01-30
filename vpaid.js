@@ -61,6 +61,7 @@ VpaidAd.prototype.initAd = function(
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
+<video></video>
 <iframe srcdoc="<html>
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <body style='margin:0'>
@@ -77,7 +78,7 @@ VpaidAd.prototype.creative_ = function () {
   s.setAttribute('data-dsp', '${this.adParameters_.DSP}');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="${this.attributes_['width']}px" height="${this.attributes_['height']}px">
+</script></body>/<html>" style="width:100%; height:100%">
 </div>
 `;
 }
