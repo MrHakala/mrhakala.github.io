@@ -21,7 +21,7 @@ var VpaidAd = function () {
  */
 VpaidAd.HTML_TEMPLATE =
     '<div style="width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/travel-spike" style="z-index:99999; width:100%; height:100%;"></iframe>'+
+    '<iframe src="https://campaign.site/test" style="z-index:99999; width:100%; height:100%;"></iframe>'+
     '</div>';
 
 /**
@@ -48,16 +48,12 @@ VpaidAd.prototype.initAd = function(
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
-
-  this.log('initAd ' + this.attributes_['width'] + 'x' + height +
-    ' ' + viewMode + ' ' + desiredBitrate);
-  
   this.renderSlot_();
   this.eventCallbacks_['AdLoaded']();
   this.log('LOADED!');
-  this.log(this.adParameters_);
-  this.log(environmentVars);
-  this.log(`initAd ${this.attributes_['width']}`);
+  this.log(`param ${this.adParameters_}`);
+  this.log(`env ${environmentVars}`);
+  this.log(`attr ${this.attributes_}`);
 
 };
 
@@ -65,21 +61,24 @@ VpaidAd.prototype.initAd = function(
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
-<iframe srcdoc="<html><body style='margin:0'>
+<video></video>
+<iframe srcdoc="<html>
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<body style='margin:0'>
 <script
-  data-creative-id='X-X-X-X'
-  data-timestamp=''
+  data-creative-id='${this.adParameters_.CREATIVE_ID}'
+  data-timestamp='${this.adParameters_.TIMESTAMP}'
 >
 (function() {
   var s   = document.createElement('script');
   s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
   s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  s.setAttribute('data-click-macro', '${this.adParameters_.CLICK_MACRO}');
+  s.setAttribute('data-domain', '${this.adParameters_.DOMAIN}');
+  s.setAttribute('data-dsp', '${this.adParameters_.DSP}');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="640px" height="360px">
+</script></body>/<html>" width="${this.attributes_['width']}px" height="${this.attributes_['height']}px">
 </div>
 `;
 }
@@ -98,7 +97,9 @@ VpaidAd.prototype.renderSlot_ = function() {
     document.body.appendChild(this.slot_);
   }
   this.slot_.innerHTML = this.creative_();
+  this.startAd();
 };
+
 
 /**
  * Returns the versions of vpaid ad supported.
@@ -109,15 +110,12 @@ VpaidAd.prototype.handshakeVersion = function(version) {
   return ('2.0');
 };
 
-
 /**
  * Called by the wrapper to start the ad.
  */
 VpaidAd.prototype.startAd = function() {
   this.log('Starting ad');
-  if ('AdStart' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdStarted']();
-  }
+  this.eventCallbacks_['AdStarted']();
 };
 
 
@@ -139,9 +137,7 @@ VpaidAd.prototype.stopAd = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  if ('AdSizeChange' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdSizeChange']();
-  }
+  this.eventCallbacks_['AdSizeChange']();
 };
 
 
@@ -150,9 +146,7 @@ VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
  */
 VpaidAd.prototype.pauseAd = function() {
   this.log('pauseAd');
-  if ('AdPaused' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdPaused']();
-  }
+  this.eventCallbacks_['AdPaused']();
 };
 
 
@@ -161,9 +155,7 @@ VpaidAd.prototype.pauseAd = function() {
  */
 VpaidAd.prototype.resumeAd = function() {
   this.log('resumeAd');
-  if ('AdResumed' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdResumed']();
-  }
+  this.eventCallbacks_['AdResumed']();
 };
 
 
