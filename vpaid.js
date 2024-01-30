@@ -61,7 +61,6 @@ VpaidAd.prototype.initAd = function(
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
-<video></video>
 <iframe srcdoc="<html>
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <body style='margin:0'>
@@ -124,9 +123,7 @@ VpaidAd.prototype.startAd = function() {
  */
 VpaidAd.prototype.stopAd = function() {
   this.log('Stopping ad');
-  if ('AdStop' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdStopped']();
-  }
+  this.eventCallbacks_['AdStopped']();
 };
 
 
