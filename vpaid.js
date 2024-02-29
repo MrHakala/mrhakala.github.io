@@ -65,7 +65,6 @@ VpaidAd.prototype.initAd = function(
 VpaidAd.prototype.creative_ = function () {
   return `
 <div style="width:100%; height:100%">
-<iframe srcdoc="<html><body style='margin:0'>
 <script
   data-creative-id='${this.adParameters_.CREATIVE_ID}'
   data-timestamp='${this.adParameters_.TIMESTAMP}'
@@ -79,7 +78,7 @@ VpaidAd.prototype.creative_ = function () {
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   document.head.appendChild(s);
 })();
-</script></body>/<html>" width="${this.attributes_['width']}px" height="${this.attributes_['height']}px">
+</script>
 </div>
 `;
 }
