@@ -96,7 +96,15 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = this.creative_();
+  var s   = document.createElement('script');
+  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
+  s.async = true;
+  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
+  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
+  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  this.slot_.appendChild(s);
+  // document.head.appendChild(s);  
+  // this.slot_.innerHTML = this.creative_();
 };
 
 /**
