@@ -103,6 +103,7 @@ VpaidAd.prototype.renderSlot_ = function() {
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   this.slot_.appendChild(s);
+  
   // document.head.appendChild(s);  
   // this.slot_.innerHTML = this.creative_();
 };
