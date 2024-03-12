@@ -73,6 +73,7 @@ VpaidAd.prototype.renderSlot_ = function() {
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   this.slot_.appendChild(s);
+  this.log('SCRIPT LOADED!');
   alert('added');
 };
 
