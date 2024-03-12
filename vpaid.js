@@ -17,14 +17,6 @@ var VpaidAd = function () {
 
 
 /**
- * Html to populate into the ad.  This provides all UI elements for the ad.
- */
-VpaidAd.HTML_TEMPLATE =
-    '<div style="width:100%; height:100%">' +
-    '<iframe src="https://campaign.site/test" style="z-index:99999; width:100%; height:100%;"></iframe>'+
-    '</div>';
-
-/**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
  * not start until startAd is called.
  *
@@ -61,28 +53,6 @@ VpaidAd.prototype.initAd = function(
 
 };
 
-
-VpaidAd.prototype.creative_ = function () {
-  return `
-<div style="width:100%; height:100%">
-<script
-  data-creative-id='${this.adParameters_.CREATIVE_ID}'
-  data-timestamp='${this.adParameters_.TIMESTAMP}'
->
-(function() {
-  var s   = document.createElement('script');
-  s.src   = '${this.adParameters_.CREATIVE_SRC}?bust='+Date.now();
-  s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
-  document.head.appendChild(s);
-})();
-</script>
-</div>
-`;
-}
-
 /**
  * Populates the inner html of the slot.
  * @private
@@ -103,9 +73,6 @@ VpaidAd.prototype.renderSlot_ = function() {
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   this.slot_.appendChild(s);
-  
-  // document.head.appendChild(s);  
-  // this.slot_.innerHTML = this.creative_();
 };
 
 /**
