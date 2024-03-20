@@ -79,19 +79,16 @@ VpaidAd.prototype.renderSlot_ = function() {
 
 VpaidAd.prototype.adLoaded_ = function () {
   this.log('IFRAME LOADING...')
-  var checkExecution = function() {
-    if (this.slot_ && typeof this.slot_.querySelector('iframe') !== 'undefined') {
-      this.log('IFRAME LOADED!')
-      this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-      if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
-        this.eventCallbacks_['AdLoaded']();
-      }
-    } else {
-      // The script has loaded but not executed, check again after a delay.
-      setTimeout(checkExecution, 100); // Check again in 100ms.
+  if (this.slot_ && typeof this.slot_.querySelector('iframe') !== 'undefined') {
+    this.log('IFRAME LOADED!')
+    this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+    if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+      this.eventCallbacks_['AdLoaded']();
     }
-  };
-  checkExecution();
+  } else {
+    // The script has loaded but not executed, check again after a delay.
+    setTimeout(this.adLoaded_(), 100); // Check again in 100ms.
+  }
 };
 
 /**
