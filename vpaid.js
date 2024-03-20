@@ -45,8 +45,8 @@ VpaidAd.prototype.initAd = function(
     ' ' + viewMode + ' ' + desiredBitrate);
 
   this.renderSlot_();
-  this.eventCallbacks_['AdLoaded']();
-  this.log('LOADED!');
+//  this.eventCallbacks_['AdLoaded']();
+//  this.log('LOADED!');
   this.log(this.adParameters_);
   this.log(environmentVars);
   this.log(`initAd ${this.attributes_['width']}`);
@@ -78,7 +78,7 @@ VpaidAd.prototype.renderSlot_ = function() {
 };
 
 VpaidAd.prototype.adLoaded_ = function () {
-  this.log('IFRAME LOADING...')
+  this.log('IFRAME LOADING...1')
   if (this.slot_ && typeof this.slot_.querySelector('iframe') !== 'undefined') {
     this.log('IFRAME LOADED!')
     this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
