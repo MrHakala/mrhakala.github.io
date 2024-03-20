@@ -4,6 +4,7 @@ var VpaidAd = function () {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
+  this.iframe_ = null;
   // The video slot is the video object that the creative can use to render the
   // video element it might have.
   this.videoSlot_ = null;
@@ -79,7 +80,8 @@ VpaidAd.prototype.renderSlot_ = function() {
 
 VpaidAd.prototype.adLoaded_ = function () {
   this.log('IFRAME LOADING...1')
-  if (this.slot_ && typeof this.slot_.querySelector('iframe') !== 'undefined') {
+  if (this.slot_ && typeof this.slot_.querySelector('iframe') === 'undefined') {
+    this.iframe_ = this.slot_.querySelector('iframe');
     this.log('IFRAME LOADED!')
     this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
     if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
@@ -130,31 +132,31 @@ VpaidAd.prototype.stopAd = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  if (!this.slot_ || typeof this.slot_.querySelector('iframe') !== 'undefined') {
+  if (!this.iframe_) {
     return
   }
-  const iframe = this.slot_.querySelector('iframe');
 
   // Calculate the scale factors for width and height
-  const scaleX = width / iframe.offsetWidth;
-  const scaleY = height / iframe.offsetHeight;
+  const scaleX = width / this.iframe_.offsetWidth;
+  const scaleY = height / this.iframe_.offsetHeight;
 
   // Use the smallest scale factor to ensure the iframe fits within the slot
   const scale = Math.min(scaleX, scaleY);
 
   // Apply the scale transformation to the iframe
-  iframe.style.transform = `scale(${scale})`;
+  this.iframe_.style.transform = `scale(${scale})`;
 
   // Center the iframe
-  iframe.style.transformOrigin = 'top left';
-  iframe.style.position = 'absolute';
-  const leftOffset = (width - iframe.offsetWidth * scale) / 2;
-  const topOffset = (height - iframe.offsetHeight * scale) / 2;
-  iframe.style.left = `${leftOffset}px`;
-  iframe.style.top = `${topOffset}px`;  
+  this.iframe_.style.transformOrigin = 'top left';
+  this.iframe_.style.position = 'absolute';
+  const leftOffset = (width - this.iframe_.offsetWidth * scale) / 2;
+  const topOffset = (height - this.iframe_.offsetHeight * scale) / 2;
+  this.iframe_.style.left = `${leftOffset}px`;
+  this.iframe_.style.top = `${topOffset}px`;  
   if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
     this.eventCallbacks_['AdSizeChange']();
   }
+  this.log('NEW SIZE APPLIED');
 };
 
 
