@@ -198,8 +198,10 @@ class VpaidAd {
     getAdDuration() {}
     getAdRemainingTime() {}
     getAdIcons() {}
+    getAdExpanded() {}
     getAdCompanions() {}
-
+    setAdVolume(){}
+    getAdVolume(){}
 }
 
 // Expose the VpaidAd class via a factory function
