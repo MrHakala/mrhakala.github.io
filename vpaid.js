@@ -74,7 +74,7 @@ VpaidAd.prototype.renderSlot_ = function() {
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   this.slot_.appendChild(s);
   this.log('SCRIPT LOADED!');
-  alert('added');
+  this.resizeAd();
 };
 
 /**
@@ -116,7 +116,29 @@ VpaidAd.prototype.stopAd = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  if ('AdSizeChange' in this.eventCallbacks_) {
+  if (!this.slot_ || typeof this.slot_.querySelector('iframe') !== 'undefined') {
+    return
+  }
+  const iframe = this.slot_.querySelector('iframe');
+
+  // Calculate the scale factors for width and height
+  const scaleX = width / iframe.offsetWidth;
+  const scaleY = height / iframe.offsetHeight;
+
+  // Use the smallest scale factor to ensure the iframe fits within the slot
+  const scale = Math.min(scaleX, scaleY);
+
+  // Apply the scale transformation to the iframe
+  iframe.style.transform = `scale(${scale})`;
+
+  // Center the iframe
+  iframe.style.transformOrigin = 'top left';
+  iframe.style.position = 'absolute';
+  const leftOffset = (width - iframe.offsetWidth * scale) / 2;
+  const topOffset = (height - iframe.offsetHeight * scale) / 2;
+  iframe.style.left = `${leftOffset}px`;
+  iframe.style.top = `${topOffset}px`;  
+  if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
     this.eventCallbacks_['AdSizeChange']();
   }
 };
