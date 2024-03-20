@@ -1,5 +1,3 @@
-//https://github.com/ryanthompson591/vpaidExamples/blob/master/playVideo/VpaidVideoAd.js
-
 var VpaidAd = function () {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
@@ -14,7 +12,6 @@ var VpaidAd = function () {
   this.attributes_ = {};
   this.adParameters_ = {};
 };
-
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
@@ -37,27 +34,25 @@ VpaidAd.prototype.initAd = function(
     environmentVars) {
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
+  this.attributes_['viewMode'] = viewMode;
+  this.attributes_['bitrate'] = bitrate;
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
+  this.renderAd_();
 
-  this.log('initAd ' + this.attributes_['width'] + 'x' + height +
-    ' ' + viewMode + ' ' + desiredBitrate);
-
-  this.renderSlot_();
-  this.eventCallbacks_['AdLoaded']();
-  this.log('LOADED!');
-  this.log(this.adParameters_);
-  this.log(environmentVars);
-  this.log(`initAd ${this.attributes_['width']}`);
+  this.log(`param ${this.adParameters_}`);
+  this.log(`env ${environmentVars}`);
+  this.log(`attr ${this.attributes_}`);
 
 };
 
+
 /**
- * Populates the inner html of the slot.
+ * Check for slot
  * @private
  */
-VpaidAd.prototype.renderSlot_ = function() {
+VpaidAd.prototype.slotExists_ = function () {
   var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
@@ -66,24 +61,40 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
+};
+
+
+/**
+ * Populate the slot.
+ * @private
+ */
+VpaidAd.prototype.renderAd_ = function () {
+  this.slotExists_();
   var s   = document.createElement('script');
   s.src   = this.adParameters_.CREATIVE_SRC+'?bust='+Date.now();
   s.async = true;
   s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  s.onload = this.adLoaded_();
   this.slot_.appendChild(s);
-  this.log('SCRIPT LOADED!');
-  alert('added');
 };
 
-/**
- * Returns the versions of vpaid ad supported.
- * @param {string} version
- * @return {string}
- */
-VpaidAd.prototype.handshakeVersion = function(version) {
-  return ('2.0');
+VpaidAd.prototype.adLoaded_ = function () {
+  this.slotExists_();
+  var checkExecution = function() {
+    if (typeof this.slot_.querySelector('iframe') !== 'undefined') {
+      this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+      if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+        this.eventCallbacks_['AdLoaded']();
+      }
+      this.log('LOADED!');
+    } else {
+      // The script has loaded but not executed, check again after a delay.
+      setTimeout(checkExecution, 100); // Check again in 100ms.
+    }
+  };
+  checkExecution();
 };
 
 
@@ -92,7 +103,7 @@ VpaidAd.prototype.handshakeVersion = function(version) {
  */
 VpaidAd.prototype.startAd = function() {
   this.log('Starting ad');
-  if ('AdStart' in this.eventCallbacks_) {
+  if (typeof this.eventCallbacks_['AdStarted'] === 'function') {
     this.eventCallbacks_['AdStarted']();
   }
 };
@@ -103,7 +114,12 @@ VpaidAd.prototype.startAd = function() {
  */
 VpaidAd.prototype.stopAd = function() {
   this.log('Stopping ad');
-  if ('AdStop' in this.eventCallbacks_) {
+  // Perform ad cleanup
+  if (typeof this.slot_.querySelector('iframe') !== 'undefined') {
+    const iframe = this.slot_.querySelector('iframe');
+    iframe.remove();
+  }
+  if (typeof this.eventCallbacks_['AdStopped'] === 'function') {
     this.eventCallbacks_['AdStopped']();
   }
 };
@@ -116,7 +132,27 @@ VpaidAd.prototype.stopAd = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  if ('AdSizeChange' in this.eventCallbacks_) {
+
+  const iframe = this.slot_.querySelector('iframe');
+
+  // Calculate the scale factors for width and height
+  const scaleX = width / iframe.offsetWidth;
+  const scaleY = height / iframe.offsetHeight;
+
+  // Use the smallest scale factor to ensure the iframe fits within the slot
+  const scale = Math.min(scaleX, scaleY);
+
+  // Apply the scale transformation to the iframe
+  iframe.style.transform = `scale(${scale})`;
+
+  // Center the iframe
+  iframe.style.transformOrigin = 'top left';
+  iframe.style.position = 'absolute';
+  const leftOffset = (width - iframe.offsetWidth * scale) / 2;
+  const topOffset = (height - iframe.offsetHeight * scale) / 2;
+  iframe.style.left = `${leftOffset}px`;
+  iframe.style.top = `${topOffset}px`;  
+  if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
     this.eventCallbacks_['AdSizeChange']();
   }
 };
@@ -127,7 +163,7 @@ VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
  */
 VpaidAd.prototype.pauseAd = function() {
   this.log('pauseAd');
-  if ('AdPaused' in this.eventCallbacks_) {
+  if (typeof this.eventCallbacks_['AdPaused'] === 'function') {
     this.eventCallbacks_['AdPaused']();
   }
 };
@@ -138,7 +174,7 @@ VpaidAd.prototype.pauseAd = function() {
  */
 VpaidAd.prototype.resumeAd = function() {
   this.log('resumeAd');
-  if ('AdResumed' in this.eventCallbacks_) {
+  if (typeof this.eventCallbacks_['AdResumed'] === 'function') {
     this.eventCallbacks_['AdResumed']();
   }
 };
@@ -184,6 +220,15 @@ VpaidAd.prototype.getAdLinear = function() {};
 
 VpaidAd.prototype.log = function (message) {
   console.log(message);
+};
+
+/**
+ * Returns the versions of vpaid ad supported.
+ * @param {string} version
+ * @return {string}
+ */
+VpaidAd.prototype.handshakeVersion = function(version) {
+  return ('2.0');
 };
 
 var getVPAIDAd = function() {
