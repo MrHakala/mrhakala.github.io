@@ -1,246 +1,209 @@
-var VpaidAd = function () {
-  // The slot is the div element on the main page that the ad is supposed to
-  // occupy.
-  this.slot_ = null;
-  // Cavai creative iframe
-  this.iframe_ = null;
-  // The video slot is the video object that the creative can use to render the
-  // video element it might have.
-  this.videoSlot_ = null;
-  // An object containing all registered events.  These events are all
-  // callbacks from the vpaid ad.
-  this.eventCallbacks_ = {};
-  // A list of attributes getable and setable.
-  this.attributes_ = {};
-  this.adParameters_ = {};
-};
-
-
-/**
- * VPAID defined init ad, initializes all attributes in the ad.  Ad will
- * not start until startAd is called.
- *
- * @param {number} width The ad width.
- * @param {number} height The ad heigth.
- * @param {string} viewMode The ad view mode.
- * @param {number} desiredBitrate The desired bitrate.
- * @param {Object} creativeData Data associated with the creative.
- * @param {Object} environmentVars Variables associated with the creative like
- *     the slot and video slot.
- */
-VpaidAd.prototype.initAd = function(
-    width,
-    height,
-    viewMode,
-    desiredBitrate,
-    creativeData,
-    environmentVars) {
-  this.attributes_['width'] = width;
-  this.attributes_['height'] = height;
-  this.slot_ = environmentVars.slot;
-  this.videoSlot_ = environmentVars.videoSlot;
-  try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
-  this.renderSlot_();
-//  this.eventCallbacks_['AdLoaded']();
-//  this.log('LOADED!');
-//  this.log(this.adParameters_);
-//  this.log(environmentVars);
-};
-
-/**
- * Populates the inner html of the slot.
- * @private
- */
-VpaidAd.prototype.renderSlot_ = function() {
-  var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
-  if (!slotExists) {
-    this.slot_ = document.createElement('div');
-    if (!document.body) {
-      document.body = /**@type {HTMLDocument}*/ document.createElement('body');
+class VpaidAd {
+    constructor() {
+        this.slot_ = null;
+        this.iframe_ = null;
+        this.videos_ = [];
+        this.videoSlot_ = null;
+        this.eventCallbacks_ = {};
+        this.attributes_ = {};
+        this.adParameters_ = {};
     }
-    document.body.appendChild(this.slot_);
-  }
-  this.slot_.style.background = 'black';
 
-  var s   = document.createElement('script');
-  s.src   = this.adParameters_.CREATIVE_SRC+'?bust='+Date.now();
-  s.async = true;
-  s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
-  s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
-  s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
-  s.onload = this.adLoaded_();
-  this.slot_.appendChild(s);
-  this.log('SCRIPT LOADED!');
-};
-
-VpaidAd.prototype.adLoaded_ = function (delay = 50) {
-  this.log('IFRAME LOADING...'+delay)
-  if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
-    this.iframe_ = this.slot_.querySelector('iframe');
-    this.log('IFRAME LOADED!')
-    this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-    if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
-      this.eventCallbacks_['AdLoaded']();
+    initAd(width, height, viewMode, desiredBitrate, creativeData, environmentVars) {
+        this.attributes_['width'] = width;
+        this.attributes_['height'] = height;
+        this.slot_ = environmentVars.slot;
+        this.videoSlot_ = environmentVars.videoSlot;
+        try {
+            this.adParameters_ = JSON.parse(creativeData.AdParameters);
+        } catch (e) {}
+        this.renderSlot_();
     }
-    this.videoLoaded_();
-  } else {
-    if (delay < 10000) {
-      // The script has loaded but not executed, check again after a delay.
-      setTimeout(() => this.adLoaded_(delay + 50), delay); // Check again in 100ms.
+
+    renderSlot_() {
+        var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
+        if (!slotExists) {
+            this.slot_ = document.createElement('div');
+            if (!document.body) {
+                document.body = document.createElement('body');
+            }
+            document.body.appendChild(this.slot_);
+        }
+        this.slot_.style.background = 'black';
+
+        var script = document.createElement('script');
+        script.src = this.adParameters_.CREATIVE_SRC + '?bust=' + Date.now();
+        script.async = true;
+        script.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
+        script.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
+        script.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+        script.onload = () => this.adLoaded_();
+        this.slot_.appendChild(script);
+        this.log('SCRIPT LOADED!');
     }
-  }
-};
 
-VpaidAd.prototype.videoLoaded_ = function (delay = 50) {
-  this.log('Video LOADING...'+delay)
-  var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
-  var videos = iframeDoc.querySelectorAll('video');
-  if(videos){
-    // Now you can work with the NodeList of video elements
-    this.log('Found ' + videos.length + ' video(s) in the iframe.');
-    videos.forEach(function(video, index) {
-        this.log('Video ' + (index + 1) + ' sources:', video.src);
-    });
-  } else {
-    if (delay < 10000) {
-      setTimeout(() => this.videoLoaded_(delay + 50), delay); // Check again in 100ms.
+    adLoaded_(delay = 50) {
+        this.log('IFRAME LOADING...' + delay);
+        if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
+            this.iframe_ = this.slot_.querySelector('iframe');
+            this.log('IFRAME LOADED!');
+            this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+            if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+                this.eventCallbacks_['AdLoaded']();
+            }
+            this.videoLoaded_();
+        } else {
+            if (delay < 10000) {
+                setTimeout(() => this.adLoaded_(delay + 50), delay);
+            }
+        }
     }
-  }
+
+    videoLoaded_(delay = 50) {
+        this.log('Video LOADING...' + delay);
+        var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+        this.videos_ = iframeDoc.querySelectorAll('video');
+        if (this.videos_.length === 0 && delay < 10000) {
+            setTimeout(() => this.videoLoaded_(delay + 50), delay);
+        }
+    }
+
+    handshakeVersion(version) {
+        return '2.0';
+    }
+
+    startAd() {
+        this.log('Starting ad');
+        if (this.videos_.length) {
+            this.videos_.forEach(video => {
+                video.play().catch(error => {
+                    console.error('Error attempting to play video:', error);
+                });
+            });
+        }
+        if (typeof this.eventCallbacks_['AdStarted'] === 'function') {
+            this.eventCallbacks_['AdStarted']();
+        }
+    }
+
+    stopAd() {
+        this.log('Stopping ad');
+        // Perform cleanup operations
+        // For example, remove the ad from the DOM:
+        if (this.slot_ && this.slot_.parentNode) {
+            this.slot_.parentNode.removeChild(this.slot_);
+        }
+        // Reset or nullify properties to release resources
+        this.slot_ = null;
+        this.videoSlot_ = null;
+        this.iframe_ = null;
+        this.videos_ = [];
+
+        // Notify the video player that the ad has been stopped
+        if (typeof this.eventCallbacks_['AdStopped'] === 'function') {
+            this.eventCallbacks_['AdStopped']();
+        }
+    }
+
+    resizeAd(width, height, viewMode) {
+      this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
+      if (!this.iframe_) {
+        return
+      }
+      // Calculate the scale factors for width and height
+      const scaleX = width / this.iframe_.offsetWidth;
+      const scaleY = height / this.iframe_.offsetHeight;
+      // Use the smallest scale factor to ensure the iframe fits within the slot
+      const scale = Math.min(scaleX, scaleY);
+      // Apply the scale transformation to the iframe
+      this.iframe_.style.transform = `scale(${scale})`;
+      // Center the iframe
+      this.iframe_.style.transformOrigin = 'top left';
+      this.iframe_.style.position = 'absolute';
+      const leftOffset = (width - this.iframe_.offsetWidth * scale) / 2;
+      const topOffset = (height - this.iframe_.offsetHeight * scale) / 2;
+      this.iframe_.style.left = `${leftOffset}px`;
+      this.iframe_.style.top = `${topOffset}px`;  
+      if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
+        this.eventCallbacks_['AdSizeChange']();
+      }
+      this.log('NEW SIZE APPLIED');
+    }
+
+    pauseAd() {
+      if (this.videos_.length) {
+        this.videos_.forEach(video => video.pause());
+      }
+      if (typeof this.eventCallbacks_['AdPaused'] === 'function') {
+        this.eventCallbacks_['AdPaused']();
+      }
+    }
+
+    resumeAd() {
+      if (this.videos_.length) {
+        this.videos_.forEach(video => {
+          video.play().catch(error => {
+            console.error('Error attempting to play video:', error);
+          });
+        });
+      }
+      if (typeof this.eventCallbacks_['AdResumed'] === 'function') {
+        this.eventCallbacks_['AdResumed']();
+      }
+    }
+
+    subscribe(aCallback, eventName, aContext) {
+      this.log('Subscribe ' + aCallback);
+      var callback = aCallback.bind(aContext);
+      this.eventCallbacks_[eventName] = callback;
+    }
+
+    unsubscribe(eventName) {
+      this.log('unsubscribe ' + eventName);
+      this.eventCallbacks_[eventName] = null;
+    }
+
+    getAdSkippableState() {
+      return true;
+    }
+
+    skipAd() {
+      if (this.iframe_) {
+        this.iframe_.remove();
+      }
+    }
+
+    getAdWidth() {
+        // Placeholder for getting ad width
+      return this.attributes_['width'];
+    }
+
+    getAdHeight() {
+        // Placeholder for getting ad height
+      return this.attributes_['height'];
+    }
+
+    //getAdRemainingTime() {
+        // Placeholder for getting remaining time of the ad
+        //return 0; 
+    //}
+
+    //getAdDuration() {
+        // Placeholder for getting the duration of the ad
+    //    return 0; 
+    //}
+
+    getAdLinear() {
+        // Placeholder for checking if the ad is linear
+        return true;
+    }
+
+    log(message) {
+        console.log(message);
+    }
+}
+
+// Expose the VpaidAd class via a factory function
+window.getVPAIDAd = function() {
+    return new VpaidAd();
 };
-
-/**
- * Returns the versions of vpaid ad supported.
- * @param {string} version
- * @return {string}
- */
-VpaidAd.prototype.handshakeVersion = function(version) {
-  return ('2.0');
-};
-
-
-/**
- * Called by the wrapper to start the ad.
- */
-VpaidAd.prototype.startAd = function() {
-  this.log('Starting ad');
-  if ('AdStart' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdStarted']();
-  }
-};
-
-
-/**
- * Called by the wrapper to stop the ad.
- */
-VpaidAd.prototype.stopAd = function() {
-  this.log('Stopping ad');
-  if ('AdStop' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdStopped']();
-  }
-};
-
-
-/**
- * @param {number} width The new width.
- * @param {number} height A new height.
- * @param {string} viewMode A new view mode.
- */
-VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
-  this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-  if (!this.iframe_) {
-    return
-  }
-
-  // Calculate the scale factors for width and height
-  const scaleX = width / this.iframe_.offsetWidth;
-  const scaleY = height / this.iframe_.offsetHeight;
-
-  // Use the smallest scale factor to ensure the iframe fits within the slot
-  const scale = Math.min(scaleX, scaleY);
-
-  // Apply the scale transformation to the iframe
-  this.iframe_.style.transform = `scale(${scale})`;
-
-  // Center the iframe
-  this.iframe_.style.transformOrigin = 'top left';
-  this.iframe_.style.position = 'absolute';
-  const leftOffset = (width - this.iframe_.offsetWidth * scale) / 2;
-  const topOffset = (height - this.iframe_.offsetHeight * scale) / 2;
-  this.iframe_.style.left = `${leftOffset}px`;
-  this.iframe_.style.top = `${topOffset}px`;  
-  if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
-    this.eventCallbacks_['AdSizeChange']();
-  }
-  this.log('NEW SIZE APPLIED');
-};
-
-
-/**
- * Pauses the ad.
- */
-VpaidAd.prototype.pauseAd = function() {
-  this.log('pauseAd');
-  if ('AdPaused' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdPaused']();
-  }
-};
-
-
-/**
- * Resumes the ad.
- */
-VpaidAd.prototype.resumeAd = function() {
-  this.log('resumeAd');
-  if ('AdResumed' in this.eventCallbacks_) {
-    this.eventCallbacks_['AdResumed']();
-  }
-};
-
-
-/**
- * Registers a callback for an event.
- * @param {Function} aCallback The callback function.
- * @param {string} eventName The callback type.
- * @param {Object} aContext The context for the callback.
- */
-VpaidAd.prototype.subscribe = function(aCallback, eventName, aContext) {
-  this.log('Subscribe ' + aCallback);
-  var callBack = aCallback.bind(aContext);
-  this.eventCallbacks_[eventName] = callBack;
-};
-
-
-/**
- * Removes a callback based on the eventName.
- *
- * @param {string} eventName The callback type.
- */
-VpaidAd.prototype.unsubscribe = function(eventName) {
-  this.log('unsubscribe ' + eventName);
-  this.eventCallbacks_[eventName] = null;
-};
-
-VpaidAd.prototype.setAdVolume = function (value) { };
-VpaidAd.prototype.getAdVolume = function() {};
-VpaidAd.prototype.expandAd = function() {};
-VpaidAd.prototype.getAdExpanded = function() {};
-VpaidAd.prototype.getAdSkippableState = function() {};
-VpaidAd.prototype.collapseAd = function() {};
-VpaidAd.prototype.skipAd = function() {};
-VpaidAd.prototype.getAdWidth = function() {return 0;};
-VpaidAd.prototype.getAdHeight = function() {};
-VpaidAd.prototype.getAdRemainingTime = function() {};
-VpaidAd.prototype.getAdDuration = function() {};
-VpaidAd.prototype.getAdCompanions = function() {};
-VpaidAd.prototype.getAdIcons = function() {};
-VpaidAd.prototype.getAdLinear = function() {};
-
-VpaidAd.prototype.log = function (message) {
-  console.log(message);
-};
-
-var getVPAIDAd = function() {
-  return new VpaidAd();
-};
-
-window.getVPAIDAd = getVPAIDAd;
