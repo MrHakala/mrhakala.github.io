@@ -1,9 +1,8 @@
-//https://github.com/ryanthompson591/vpaidExamples/blob/master/playVideo/VpaidVideoAd.js
-
 var VpaidAd = function () {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
+  // Cavai creative iframe
   this.iframe_ = null;
   // The video slot is the video object that the creative can use to render the
   // video element it might have.
@@ -41,17 +40,11 @@ VpaidAd.prototype.initAd = function(
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
-
-  this.log('initAd ' + this.attributes_['width'] + 'x' + height +
-    ' ' + viewMode + ' ' + desiredBitrate);
-
   this.renderSlot_();
 //  this.eventCallbacks_['AdLoaded']();
 //  this.log('LOADED!');
-  this.log(this.adParameters_);
-  this.log(environmentVars);
-  this.log(`initAd ${this.attributes_['width']}`);
-
+//  this.log(this.adParameters_);
+//  this.log(environmentVars);
 };
 
 /**
@@ -67,6 +60,8 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
+  this.slot_.style.background = 'black';
+  
   var s   = document.createElement('script');
   s.src   = this.adParameters_.CREATIVE_SRC+'?bust='+Date.now();
   s.async = true;
@@ -78,8 +73,8 @@ VpaidAd.prototype.renderSlot_ = function() {
   this.log('SCRIPT LOADED!');
 };
 
-VpaidAd.prototype.adLoaded_ = function () {
-  this.log('IFRAME LOADING...123')
+VpaidAd.prototype.adLoaded_ = function (delay = 10) {
+  this.log('IFRAME LOADING...'+delay)
   if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
     this.iframe_ = this.slot_.querySelector('iframe');
     this.log('IFRAME LOADED!')
@@ -87,9 +82,21 @@ VpaidAd.prototype.adLoaded_ = function () {
     if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
       this.eventCallbacks_['AdLoaded']();
     }
+    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    this.log('Doc '+iframeDoc);
+    try {
+      var videos = iframeDoc.querySelectorAll('video');
+      // Now you can work with the NodeList of video elements
+      this.log('Found ' + videos.length + ' video(s) in the iframe.');
+      videos.forEach(function(video, index) {
+          this.log('Video ' + (index + 1) + ' sources:', video.src);
+      });
+    } catch (e) { }
   } else {
-    // The script has loaded but not executed, check again after a delay.
-    setTimeout(() => this.adLoaded_(), 500); // Check again in 100ms.
+    if (delay < 10000) {
+      // The script has loaded but not executed, check again after a delay.
+      setTimeout(() => this.adLoaded_(delay + 50), delay); // Check again in 100ms.
+    }
   }
 };
 
