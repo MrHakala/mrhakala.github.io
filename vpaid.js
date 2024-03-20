@@ -82,20 +82,28 @@ VpaidAd.prototype.adLoaded_ = function (delay = 50) {
     if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
       this.eventCallbacks_['AdLoaded']();
     }
-    var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
-    this.log('Doc '+iframeDoc);
-    try {
-      var videos = iframeDoc.querySelectorAll('video');
-      // Now you can work with the NodeList of video elements
-      this.log('Found ' + videos.length + ' video(s) in the iframe.');
-      videos.forEach(function(video, index) {
-          this.log('Video ' + (index + 1) + ' sources:', video.src);
-      });
-    } catch (e) { }
+    this.videoLoaded_();
   } else {
     if (delay < 10000) {
       // The script has loaded but not executed, check again after a delay.
       setTimeout(() => this.adLoaded_(delay + 50), delay); // Check again in 100ms.
+    }
+  }
+};
+
+VpaidAd.prototype.videoLoaded_ = function (delay = 50) {
+  this.log('Video LOADING...'+delay)
+  var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+  var videos = iframeDoc.querySelectorAll('video');
+  if(videos){
+    // Now you can work with the NodeList of video elements
+    this.log('Found ' + videos.length + ' video(s) in the iframe.');
+    videos.forEach(function(video, index) {
+        this.log('Video ' + (index + 1) + ' sources:', video.src);
+    });
+  } else {
+    if (delay < 10000) {
+      setTimeout(() => this.videoLoaded_(delay + 50), delay); // Check again in 100ms.
     }
   }
 };
