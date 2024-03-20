@@ -132,7 +132,9 @@ VpaidAd.prototype.stopAd = function() {
  */
 VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
-
+  if (!this.slot_ || typeof this.slot_.querySelector('iframe') !== 'undefined') {
+    return
+  }
   const iframe = this.slot_.querySelector('iframe');
 
   // Calculate the scale factors for width and height
