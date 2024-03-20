@@ -61,7 +61,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     document.body.appendChild(this.slot_);
   }
   this.slot_.style.background = 'black';
-  
+
   var s   = document.createElement('script');
   s.src   = this.adParameters_.CREATIVE_SRC+'?bust='+Date.now();
   s.async = true;
@@ -73,7 +73,7 @@ VpaidAd.prototype.renderSlot_ = function() {
   this.log('SCRIPT LOADED!');
 };
 
-VpaidAd.prototype.adLoaded_ = function (delay = 10) {
+VpaidAd.prototype.adLoaded_ = function (delay = 50) {
   this.log('IFRAME LOADING...'+delay)
   if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
     this.iframe_ = this.slot_.querySelector('iframe');
@@ -82,7 +82,7 @@ VpaidAd.prototype.adLoaded_ = function (delay = 10) {
     if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
       this.eventCallbacks_['AdLoaded']();
     }
-    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     this.log('Doc '+iframeDoc);
     try {
       var videos = iframeDoc.querySelectorAll('video');
