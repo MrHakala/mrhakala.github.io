@@ -123,7 +123,7 @@ class VpaidAd {
       const leftOffset = (width - this.iframe_.offsetWidth * scale) / 2;
       const topOffset = (height - this.iframe_.offsetHeight * scale) / 2;
       this.iframe_.style.left = `${leftOffset}px`;
-      this.iframe_.style.top = `${topOffset}px`;  
+      this.iframe_.style.top = `${topOffset}px`;
       if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
         this.eventCallbacks_['AdSizeChange']();
       }
@@ -183,29 +183,21 @@ class VpaidAd {
       return this.attributes_['height'];
     }
 
-    //getAdRemainingTime() {
-        // Placeholder for getting remaining time of the ad
-        //return 0; 
-    //}
-
-    //getAdDuration() {
-        // Placeholder for getting the duration of the ad
-    //    return 0; 
-    //}
-
     getAdLinear() {
-        // Placeholder for checking if the ad is linear
-        return true;
+      return true;
     }
 
     log(message) {
-        console.log(message);
+      console.log(message);
     }
-  
-    collapseAd() {
-      // Placeholder for collapsing the ad
-      // Function required by https://googleads.github.io/googleads-ima-html5/vsi/
-    }
+
+    // Placeholder for required functions by eg.
+    // https://googleads.github.io/googleads-ima-html5/vsi/
+    collapseAd() {}
+    expandAd() {}
+    getAdDuration() {}
+    getAdRemainingTime() {}
+
 }
 
 // Expose the VpaidAd class via a factory function
