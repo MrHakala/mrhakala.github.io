@@ -80,7 +80,7 @@ VpaidAd.prototype.renderSlot_ = function() {
 VpaidAd.prototype.adLoaded_ = function () {
   this.log('IFRAME LOADING...')
   var checkExecution = function() {
-    if (typeof this.slot_.querySelector('iframe') !== 'undefined') {
+    if (this.slot_ && typeof this.slot_.querySelector('iframe') !== 'undefined') {
       this.log('IFRAME LOADED!')
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
