@@ -91,12 +91,14 @@ VpaidAd.prototype.adLoaded_ = function () {
       this.log('LOADED!');
       var iframe = this.slot_.querySelector('iframe');
       var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      this.log('Doc '+iframeDoc);
+      try {
       var videos = iframeDoc.querySelectorAll('video');
       // Now you can work with the NodeList of video elements
       this.log('Found ' + videos.length + ' video(s) in the iframe.');
       videos.forEach(function(video, index) {
           this.log('Video ' + (index + 1) + ' sources:', video.src);
-      });
+      });} catch(e){}
     } else {
       // The script has loaded but not executed, check again after a delay.
       setTimeout(checkExecution, 100); // Check again in 100ms.
