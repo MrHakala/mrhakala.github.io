@@ -79,7 +79,7 @@ VpaidAd.prototype.renderSlot_ = function() {
 };
 
 VpaidAd.prototype.adLoaded_ = function () {
-  this.log('IFRAME LOADING...1')
+  this.log('IFRAME LOADING...12')
   if (this.slot_ && typeof this.slot_.querySelector('iframe') === 'undefined') {
     this.iframe_ = this.slot_.querySelector('iframe');
     this.log('IFRAME LOADED!')
