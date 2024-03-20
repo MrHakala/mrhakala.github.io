@@ -72,9 +72,26 @@ VpaidAd.prototype.renderSlot_ = function() {
   s.setAttribute('data-click-macro', 'MACRO_PLACEHOLDER');
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
+  s.onload = this.adLoaded_();
   this.slot_.appendChild(s);
   this.log('SCRIPT LOADED!');
-  this.resizeAd();
+};
+
+VpaidAd.prototype.adLoaded_ = function () {
+  this.log('IFRAME LOADING...')
+  var checkExecution = function() {
+    if (typeof this.slot_.querySelector('iframe') !== 'undefined') {
+      this.log('IFRAME LOADED!')
+      this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+      if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+        this.eventCallbacks_['AdLoaded']();
+      }
+    } else {
+      // The script has loaded but not executed, check again after a delay.
+      setTimeout(checkExecution, 100); // Check again in 100ms.
+    }
+  };
+  checkExecution();
 };
 
 /**
