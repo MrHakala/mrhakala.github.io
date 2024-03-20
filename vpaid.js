@@ -201,6 +201,11 @@ class VpaidAd {
     log(message) {
         console.log(message);
     }
+  
+    collapseAd() {
+      // Placeholder for collapsing the ad
+      // Function required by https://googleads.github.io/googleads-ima-html5/vsi/
+    }
 }
 
 // Expose the VpaidAd class via a factory function
