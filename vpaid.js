@@ -68,6 +68,19 @@ class VpaidAd {
         }
     }
 
+    destroy_() {
+        // Perform cleanup operations
+        // Remove the ad from the DOM:
+        if (this.slot_ && this.slot_.parentNode) {
+            this.slot_.parentNode.removeChild(this.slot_);
+        }
+        // Reset or nullify properties to release resources
+        this.slot_ = null;
+        this.videoSlot_ = null;
+        this.iframe_ = null;
+        this.videos_ = [];
+    }
+
     handshakeVersion(version) {
         return '2.0';
     }
@@ -88,16 +101,7 @@ class VpaidAd {
 
     stopAd() {
         this.log('Stopping ad');
-        // Perform cleanup operations
-        // For example, remove the ad from the DOM:
-        if (this.slot_ && this.slot_.parentNode) {
-            this.slot_.parentNode.removeChild(this.slot_);
-        }
-        // Reset or nullify properties to release resources
-        this.slot_ = null;
-        this.videoSlot_ = null;
-        this.iframe_ = null;
-        this.videos_ = [];
+        this.destroy_();
 
         // Notify the video player that the ad has been stopped
         if (typeof this.eventCallbacks_['AdStopped'] === 'function') {
@@ -168,9 +172,11 @@ class VpaidAd {
     }
 
     skipAd() {
-      if (this.iframe_) {
-        this.iframe_.remove();
-      }
+        this.destroy_();
+        // Notify the video player that the ad has been stopped
+        if (typeof this.eventCallbacks_['AdSkipped'] === 'function') {
+            this.eventCallbacks_['AdSkipped']();
+        }
     }
 
     getAdWidth() {
