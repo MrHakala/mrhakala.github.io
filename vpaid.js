@@ -77,6 +77,7 @@ VpaidAd.prototype.renderAd_ = function () {
   s.setAttribute('data-domain', 'DOMAIN_PLACEHOLDER');
   s.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
   s.onload = this.adLoaded_();
+  this.log('Start render!');
   this.slot_.appendChild(s);
 };
 
