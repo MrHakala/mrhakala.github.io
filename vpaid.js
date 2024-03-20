@@ -35,7 +35,7 @@ VpaidAd.prototype.initAd = function(
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
   this.attributes_['viewMode'] = viewMode;
-  this.attributes_['bitrate'] = bitrate;
+  this.attributes_['bitrate'] = desiredBitrate;
   this.slot_ = environmentVars.slot;
   this.videoSlot_ = environmentVars.videoSlot;
   try { this.adParameters_ = JSON.parse(creativeData.AdParameters); } catch(e){}
@@ -89,6 +89,14 @@ VpaidAd.prototype.adLoaded_ = function () {
         this.eventCallbacks_['AdLoaded']();
       }
       this.log('LOADED!');
+      var iframe = this.slot_.querySelector('iframe');
+      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      var videos = iframeDoc.querySelectorAll('video');
+      // Now you can work with the NodeList of video elements
+      this.log('Found ' + videos.length + ' video(s) in the iframe.');
+      videos.forEach(function(video, index) {
+          this.log('Video ' + (index + 1) + ' sources:', video.src);
+      });
     } else {
       // The script has loaded but not executed, check again after a delay.
       setTimeout(checkExecution, 100); // Check again in 100ms.
