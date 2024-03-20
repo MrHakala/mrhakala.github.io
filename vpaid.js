@@ -197,6 +197,8 @@ class VpaidAd {
     expandAd() {}
     getAdDuration() {}
     getAdRemainingTime() {}
+    getAdIcons() {}
+    getAdCompanions() {}
 
 }
 
