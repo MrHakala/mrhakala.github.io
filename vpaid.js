@@ -14,6 +14,7 @@ class VpaidAd {
     this.elapsedTime = 0;
     this.timer = null;
     this.isPaused = false;
+    this.userInteracted = false;
   }
 
   initAd(width, height, viewMode, desiredBitrate, creativeData, environmentVars) {
@@ -66,24 +67,41 @@ class VpaidAd {
     this.log('IFRAME LOADING...' + delay);
     if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
       this.iframe_ = this.slot_.querySelector('iframe');
-      this.log('IFRAME LOADED!');
-      this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-      this.videoLoaded_();
-      if (this.adDuration) {
-        this.startTime = Date.now(); // Record start time
-        this.setTimer_(this.adDuration); // Set a timer for 30 seconds
-      }
-      if (!this.adParameters_.VIDEO_SRC) {
-        if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
-          this.eventCallbacks_['AdLoaded']();
-          this.log('NON-VIDEO AD LOADED');
+      this.iframe_.addEventListener('load', () => {
+        this.log('IFRAME LOADED!');
+        this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+        this.videoLoaded_();
+        this.trackInteraction_();
+
+        // Use separate timer for ad duration
+        if (this.adDuration) {
+          this.startTime = Date.now(); // Record start time
+          this.setTimer_(this.adDuration); // Set a timer for 30 seconds
         }
-      }
+        // No videos to load -> Callback to player that ad loaded
+        if (!this.adParameters_.VIDEO_SRC) {
+          if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+            this.eventCallbacks_['AdLoaded']();
+            this.log('NON-VIDEO AD LOADED');
+          }
+        }
+      })
     } else {
       if (delay < 10000) {
         setTimeout(() => this.adLoaded_(delay + 50), delay);
       }
     }
+  }
+
+  trackInteraction_() {
+    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+    iframeDoc.addEventListener('click', (event) => {
+      this.log('AD CLICKED!');
+      this.userInteracted = true;
+      if (typeof this.eventCallbacks_['AdInteraction'] === 'function') {
+        this.eventCallbacks_['AdInteraction']();
+      }
+    });
   }
 
   videoLoaded_(delay = 50) {
@@ -265,9 +283,26 @@ class VpaidAd {
     }
   }
   getAdDuration() {
-      return 30
+    //User has interacted
+    if (this.userInteracted) {
+      return -2
+    }
+    // Use preset duration
+    if (this.adDuration) {
+      return this.adDuration
+    }
+    // Use duration if first video
+    if (this.videos_.length > 0) {
+      return this.videos_[0].duration
+    }
+    // Not supported. ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
+    return -1
   }
   getAdRemainingTime() {
+    //User has interacted
+    if (this.userInteracted) {
+      return -2
+    }
     if (this.adDuration) {
       if (this.isPaused) {
         return (this.adDuration - this.elapsedTime) / 1000;
