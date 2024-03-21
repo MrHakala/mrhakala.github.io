@@ -200,10 +200,24 @@ class VpaidAd {
 
     // Placeholder for required functions by eg.
     // https://googleads.github.io/googleads-ima-html5/vsi/
-    collapseAd() {}
-    expandAd() {}
-    getAdDuration() {}
-    getAdRemainingTime() {}
+    collapseAd() {
+        this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+        if (typeof this.eventCallbacks_['AdCollapsed'] === 'function') {
+            this.eventCallbacks_['AdCollapsed']();
+        }
+    }
+    expandAd() {
+        this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+        if (typeof this.eventCallbacks_['AdExpanded'] === 'function') {
+            this.eventCallbacks_['AdExpanded']();
+        }
+    }
+    getAdDuration() {
+        return 30
+    }
+    getAdRemainingTime() {
+        return 5
+    }
     getAdIcons() {}
     getAdExpanded() {}
     getAdCompanions() {}
