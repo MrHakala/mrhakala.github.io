@@ -20,7 +20,7 @@ class VpaidAd {
         } catch (e) {}
         if (typeof this.eventCallbacks_['AdImpression'] === 'function') {
             this.eventCallbacks_['AdImpression']();
-            this.log('AD IMPRESSION');
+            this.log('AD IMPRESSION!');
         }
         this.renderSlot_();
     }
