@@ -3,7 +3,7 @@ class VpaidAd {
         this.slot_ = null;
         this.iframe_ = null;
         this.videos_ = [];
-        this.videoSlot_ = null;
+        this.videoSlot_ = document.createElement('video');
         this.eventCallbacks_ = {};
         this.attributes_ = {};
         this.adParameters_ = {};
