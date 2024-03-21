@@ -159,9 +159,8 @@ class VpaidAd {
     }
 
     subscribe(aCallback, eventName, aContext) {
-      this.log('Subscribe ' + aCallback);
-      var callback = aCallback.bind(aContext);
-      this.eventCallbacks_[eventName] = callback;
+      this.log(`Subscribe to ${eventName} with callback: ${aCallback.name}`);
+      this.eventCallbacks_[eventName] = aCallback.bind(aContext);
     }
 
     unsubscribe(eventName) {
