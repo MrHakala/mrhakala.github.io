@@ -3,7 +3,7 @@ class VpaidAd {
         this.slot_ = null;
         this.iframe_ = null;
         this.videos_ = [];
-        this.videoSlot_ = document.createElement('video');
+        this.videoSlot_ = null;
         this.eventCallbacks_ = {};
         this.attributes_ = {};
         this.adParameters_ = {};
@@ -14,7 +14,7 @@ class VpaidAd {
         this.attributes_['height'] = height;
         this.slot_ = environmentVars.slot;
         this.videoSlot_ = environmentVars.videoSlot;
-        this.videoSlot_.setAttribute('src', 'https://delivery-2.cavai.com/videodelivery/base/57cb08f15325486baabfc8b4066c2c89/thumbnails/thumbnail.mp4?audio=true&duration=2m&width=1920');
+        // this.videoSlot_.setAttribute('src', 'https://delivery-2.cavai.com/videodelivery/base/57cb08f15325486baabfc8b4066c2c89/thumbnails/thumbnail.mp4?audio=true&duration=2m&width=1920');
         try {
             this.adParameters_ = JSON.parse(creativeData.AdParameters);
         } catch (e) {}
