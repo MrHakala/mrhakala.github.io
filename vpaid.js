@@ -17,6 +17,7 @@ class VpaidAd {
         try {
             this.adParameters_ = JSON.parse(creativeData.AdParameters);
         } catch (e) {}
+        this.eventCallbacks_['AdLoaded']();
         this.renderSlot_();
     }
 
@@ -50,6 +51,7 @@ class VpaidAd {
             this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
             if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
                 this.eventCallbacks_['AdLoaded']();
+                this.log('AD LOADED ... 2');
             }
             this.videoLoaded_();
         } else {
