@@ -17,7 +17,10 @@ class VpaidAd {
         try {
             this.adParameters_ = JSON.parse(creativeData.AdParameters);
         } catch (e) {}
-        this.eventCallbacks_['AdLoaded']();
+        if (typeof this.eventCallbacks_['AdImpression'] === 'function') {
+            this.eventCallbacks_['AdImpression']();
+            this.log('AD IMPRESSION');
+        }
         this.renderSlot_();
     }
 
@@ -67,6 +70,11 @@ class VpaidAd {
         this.videos_ = iframeDoc.querySelectorAll('video');
         if (this.videos_.length === 0 && delay < 10000) {
             setTimeout(() => this.videoLoaded_(delay + 50), delay);
+        } else {
+            if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
+                this.eventCallbacks_['AdLoaded']();
+                this.log('AD LOADED ... 3');
+            }            
         }
     }
 
