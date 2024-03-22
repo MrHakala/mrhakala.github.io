@@ -102,12 +102,12 @@ class VpaidAd {
     overlay.className = 'FUCKINGOVERLAY';
 
     // Attach a click event listener to the overlay
+    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     overlay.addEventListener('click', (event) => {
       console.log('Overlay clicked');
       //overlay.style.pointerEvents = 'none';
 
       // Trigger a click on the element below
-      const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
       let elemBelow = iframeDoc.elementFromPoint(event.clientX, event.clientY);
       this.log_(elemBelow);
       this.log_('AD CLICKED!');
