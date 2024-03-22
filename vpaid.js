@@ -104,10 +104,11 @@ class VpaidAd {
     // Attach a click event listener to the overlay
     overlay.addEventListener('click', (event) => {
       console.log('Overlay clicked');
-      overlay.style.pointerEvents = 'none';
+      //overlay.style.pointerEvents = 'none';
 
       // Trigger a click on the element below
-      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+      let elemBelow = iframeDoc.elementFromPoint(event.clientX, event.clientY);
       this.log_(elemBelow);
       this.log_('AD CLICKED!');
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
@@ -120,7 +121,6 @@ class VpaidAd {
     });
 
     // Append the overlay to iframe body
-    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     iframeDoc.body.appendChild(overlay);
   }
 
