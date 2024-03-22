@@ -121,7 +121,7 @@ class VpaidAd {
     });
 
     // Append the overlay to iframe body
-    iframeDoc.appendChild(overlay);
+    this.slot_.appendChild(overlay);
   }
 
   trackInteraction_() {
