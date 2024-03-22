@@ -67,9 +67,9 @@ class VpaidAd {
       this.iframe_ = this.slot_.querySelector('iframe');
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       this.videoLoaded_();
-      this.renderOverlay_();
       this.iframe_.addEventListener('load', () => {
         this.log_('IFRAME LOADED!');
+        this.renderOverlay_();
         // Use separate timer for ad duration
         if (this.adDuration) {
           this.startTime = Date.now(); // Record start time
@@ -99,6 +99,7 @@ class VpaidAd {
     overlay.style.bottom = '0';
     overlay.style.zIndex = '999'; // Ensure overlay is above the iframe
     overlay.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
+    overlay.className = 'FUCKINGOVERLAY';
 
     // Attach a click event listener to the overlay
     overlay.addEventListener('click', (event) => {
