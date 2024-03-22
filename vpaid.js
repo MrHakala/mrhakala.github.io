@@ -118,8 +118,9 @@ class VpaidAd {
       this.callback_('AdRemainingTimeChange');
     });
 
-    // Append the overlay to the slot
-    this.iframe_.appendChild(overlay);
+    // Append the overlay to iframe body
+    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+    iframeDoc.body.appendChild(overlay);
   }
 
   trackInteraction_() {
@@ -366,14 +367,22 @@ class VpaidAd {
     // Check if the close button already exists to avoid duplicates
     if (!this.slot_.querySelector('.close-btn')) {
       const closeButton = document.createElement('div');
-      closeButton.innerText = 'X'; // Text for the close button
+      closeButton.innerHTML = '&times;'; // Using HTML entity for a "times" symbol which is commonly used for close buttons
       closeButton.style.position = 'absolute';
-      closeButton.style.top = '0';
-      closeButton.style.right = '0';
+      closeButton.style.top = '10px'; // Adding some space from the top edge for better aesthetics
+      closeButton.style.right = '10px'; // Adding some space from the right edge for better aesthetics
       closeButton.style.cursor = 'pointer';
-      closeButton.style.color = 'white'; // Adjust styles as needed
-      closeButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-      closeButton.style.padding = '10px';
+      closeButton.style.fontSize = '24px'; // Making the symbol larger and more visible
+      closeButton.style.fontWeight = 'bold';
+      closeButton.style.color = '#fff'; // White color for the symbol
+      closeButton.style.width = '30px';
+      closeButton.style.height = '30px';
+      closeButton.style.lineHeight = '30px'; // Center the symbol vertically
+      closeButton.style.textAlign = 'center'; // Center the symbol horizontally
+      closeButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
+      closeButton.style.borderRadius = '15px'; // Circular shape
+      closeButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.5)'; // Adding some shadow for depth
+      closeButton.style.zIndex = '1000'; // Ensure it's above other elements
       closeButton.className = 'close-btn';
 
       closeButton.addEventListener('click', () => {
