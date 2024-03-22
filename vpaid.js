@@ -67,8 +67,7 @@ class VpaidAd {
       this.iframe_ = this.slot_.querySelector('iframe');
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       this.videoLoaded_();
-
-
+      this.renderOverlay_();
       this.iframe_.addEventListener('load', () => {
         this.log_('IFRAME LOADED!');
         // Use separate timer for ad duration
@@ -76,7 +75,6 @@ class VpaidAd {
           this.startTime = Date.now(); // Record start time
           this.setTimer_(this.adDuration); // Set a timer for 30 seconds
         }
-        this.trackInteraction_();
         // No videos to load -> Callback to player that ad loaded
         if (!this.adParameters_.VIDEO_SRC) {
           this.callback_('AdLoaded');
@@ -90,19 +88,28 @@ class VpaidAd {
     }
   }
 
-  trackInteraction_() {
-    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
-    iframeDoc.addEventListener('click', (event) => {
+  renderOverlay_() {
+    var overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.right = '0';
+    overlay.style.bottom = '0';
+    overlay.style.zIndex = '999'; // Ensure overlay is above the iframe
+    overlay.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
+
+    // Attach a click event listener to the overlay
+    overlay.addEventListener('click', function() {
       this.log_('AD CLICKED!');
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
-      //this.startTime = Date.now()
-      //this.adDuration = this.adDuration || 15000;
       clearTimeout(this.timer);
       this.callback_('AdInteraction');
       this.callback_('AdDurationChange');
       this.callback_('AdRemainingTimeChange');
     });
+
+    this.slot_.appendChild(overlay);
   }
 
   videoLoaded_(delay = 50) {
