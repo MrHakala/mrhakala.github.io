@@ -10,11 +10,12 @@ class VpaidAd {
 
     // Timer setup for (non-video) interactive ad
     this.adDuration = 0;
+    this.adSkip = 0;
     this.startTime = 0;
     this.elapsedTime = 0;
     this.timer = null;
     this.isPaused = false;
-    this.userInteracted = false;
+    this.userInteracted = 0;
   }
 
   initAd(width, height, viewMode, desiredBitrate, creativeData, environmentVars) {
@@ -22,18 +23,15 @@ class VpaidAd {
     this.attributes_['height'] = height;
     this.slot_ = environmentVars.slot;
     this.videoSlot_ = environmentVars.videoSlot;
-    // this.videoSlot_.setAttribute('src', 'https://delivery-2.cavai.com/videodelivery/base/57cb08f15325486baabfc8b4066c2c89/thumbnails/thumbnail.mp4?audio=true&duration=2m&width=1920');
     try {
       this.adParameters_ = JSON.parse(creativeData.AdParameters);
-      this.adDuration = this.adParameters_.AD_DURATION
+      this.adDuration = this.adParameters_.AD_DURATION * 1000
+      this.adSkip = this.adParameters_.AD_SKIP * 1000
     } catch (e) {
-      this.log('NO AD PARAMS PARSED!');
+      this.log_('NO AD PARAMS PARSED!');
     }
     // Impression callback to player
-    if (typeof this.eventCallbacks_['AdImpression'] === 'function') {
-        this.eventCallbacks_['AdImpression']();
-        this.log('AD IMPRESSION!');
-    }
+    this.callback_('AdImpression');
     this.renderSlot_();
   }
 
@@ -60,30 +58,29 @@ class VpaidAd {
     script.setAttribute('data-dsp', 'DSP_PLACEHOLDER');
     script.onload = () => this.adLoaded_();
     this.slot_.appendChild(script);
-    this.log('SCRIPT LOADED!');
+    this.log_('SCRIPT LOADED!');
   }
 
   adLoaded_(delay = 50) {
-    this.log('IFRAME LOADING...' + delay);
+    this.log_('IFRAME LOADING...' + delay);
     if (this.slot_ && this.slot_.querySelector('iframe') !== null) {
       this.iframe_ = this.slot_.querySelector('iframe');
-      this.iframe_.addEventListener('load', () => {
-        this.log('IFRAME LOADED!');
-        this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-        this.videoLoaded_();
-        this.trackInteraction_();
+      this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
+      this.videoLoaded_();
 
-        // Use separate timer for ad duration
-        if (this.adDuration) {
-          this.startTime = Date.now(); // Record start time
-          this.setTimer_(this.adDuration); // Set a timer for 30 seconds
-        }
+      // Use separate timer for ad duration
+      if (this.adDuration) {
+        this.startTime = Date.now(); // Record start time
+        this.setTimer_(this.adDuration); // Set a timer for 30 seconds
+      }
+
+      this.iframe_.addEventListener('load', () => {
+        this.log_('IFRAME LOADED!');
+        this.trackInteraction_();
         // No videos to load -> Callback to player that ad loaded
         if (!this.adParameters_.VIDEO_SRC) {
-          if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
-            this.eventCallbacks_['AdLoaded']();
-            this.log('NON-VIDEO AD LOADED');
-          }
+          this.callback_('AdLoaded');
+          this.log_('NON-VIDEO AD LOADED');
         }
       })
     } else {
@@ -96,25 +93,22 @@ class VpaidAd {
   trackInteraction_() {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     iframeDoc.addEventListener('click', (event) => {
-      this.log('AD CLICKED!');
-      this.userInteracted = true;
-      if (typeof this.eventCallbacks_['AdInteraction'] === 'function') {
-        this.eventCallbacks_['AdInteraction']();
-      }
+      this.log_('AD CLICKED!');
+      // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
+      this.userInteracted = -2;
+      this.callback_('AdInteraction');
     });
   }
 
   videoLoaded_(delay = 50) {
-    this.log('Video LOADING...' + delay);
+    this.log_('Video LOADING...' + delay);
     var iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     this.videos_ = iframeDoc.querySelectorAll('video');
     if (this.videos_.length === 0 && delay < 10000) {
         setTimeout(() => this.videoLoaded_(delay + 50), delay);
     } else {
-      if (typeof this.eventCallbacks_['AdLoaded'] === 'function') {
-        this.eventCallbacks_['AdLoaded']();
-        this.log('VIDEO LOADED');
-      }
+      this.callback_('AdLoaded');
+      this.log_('VIDEO LOADED');
     }
   }
 
@@ -129,6 +123,7 @@ class VpaidAd {
     this.videoSlot_ = null;
     this.iframe_ = null;
     this.videos_ = [];
+    this.log_('AD DESTROYED');
   }
 
   handshakeVersion(version) {
@@ -136,36 +131,30 @@ class VpaidAd {
   }
 
   startAd() {
-    this.log('Starting ad');
+    this.log_('Starting ad');
     if (this.videos_.length) {
-        this.videos_.forEach(video => {
-            video.play().catch(error => {
-                console.error('Error attempting to play video:', error);
-            });
+      this.videos_.forEach(video => {
+        video.play().catch(error => {
+          this.log_('Error attempting to play video:', error);
         });
+      });
 
     }
-    if (typeof this.eventCallbacks_['AdStarted'] === 'function') {
-        this.eventCallbacks_['AdStarted']();
-    }
+    this.callback_('AdStarted');
   }
 
   stopAd() {
-    this.log('Stopping ad');
+    this.log_('Stopping ad');
     if (this.adDuration) {
       clearTimeout(this.timer); // Ensure the timer is stopped
       this.timer = null;
     }
     this.destroy_();
-
-    // Notify the video player that the ad has been stopped
-    if (typeof this.eventCallbacks_['AdStopped'] === 'function') {
-        this.eventCallbacks_['AdStopped']();
-    }
+    this.callback_('AdStopped');
   }
 
   resizeAd(width, height, viewMode) {
-    this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
+    this.log_('resizeAd ' + width + 'x' + height + ' ' + viewMode);
     if (!this.iframe_) {
       return
     }
@@ -183,10 +172,7 @@ class VpaidAd {
     const topOffset = (height - this.iframe_.offsetHeight * scale) / 2;
     this.iframe_.style.left = `${leftOffset}px`;
     this.iframe_.style.top = `${topOffset}px`;
-    if (typeof this.eventCallbacks_['AdSizeChange'] === 'function') {
-      this.eventCallbacks_['AdSizeChange']();
-    }
-    this.log('NEW SIZE APPLIED');
+    this.callback_('AdSizeChange');
   }
 
   pauseAd() {
@@ -199,12 +185,8 @@ class VpaidAd {
         clearTimeout(this.timer); // Stop the current timer
         this.elapsedTime += Date.now() - this.startTime; // Update elapsed time
         this.isPaused = true;
-        this.log('Ad paused');
     }
-    // Callback to player
-    if (typeof this.eventCallbacks_['AdPaused'] === 'function') {
-      this.eventCallbacks_['AdPaused']();
-    }
+    this.callback_('AdPaused');
   }
 
   resumeAd() {
@@ -212,7 +194,7 @@ class VpaidAd {
     if (this.videos_.length) {
       this.videos_.forEach(video => {
         video.play().catch(error => {
-          this.log('Error attempting to play video:', error);
+          this.log_('Error attempting to play video:', error);
         });
       });
     }
@@ -222,34 +204,39 @@ class VpaidAd {
         this.startTime = Date.now(); // Reset start time for remaining duration
         let remainingTime = this.adDuration - this.elapsedTime;
         this.setTimer_(remainingTime); // Set a new timer for the remaining time
-        this.log('Ad resumed');
     }
-    // Callback to player
-    if (typeof this.eventCallbacks_['AdResumed'] === 'function') {
-      this.eventCallbacks_['AdResumed']();
-    }
+    this.callback_('AdResumed');
   }
 
   subscribe(aCallback, eventName, aContext) {
-    this.log(`Subscribe to ${eventName} with callback: ${aCallback.name}`);
+    this.log_(`Subscribe to ${eventName} with callback: ${aCallback.name}`);
     this.eventCallbacks_[eventName] = aCallback.bind(aContext);
   }
 
   unsubscribe(eventName) {
-    this.log('unsubscribe ' + eventName);
+    this.log_('unsubscribe ' + eventName);
     this.eventCallbacks_[eventName] = null;
   }
 
   getAdSkippableState() {
+    if (this.userInteracted || this.isPaused) {
+      return true
+    }
+    if (this.adDuration && this.adSkip) {
+      let currentTime = Date.now();
+      let timePassed = currentTime - this.startTime + this.elapsedTime;
+      return timePassed > this.adSkip;
+    } else {
+      if (this.videos_.length > 0) {
+        return this.videos_[0].currentTime > this.adSkip;
+      }
+    }
     return true;
   }
 
   skipAd() {
     this.destroy_();
-    // Notify the video player that the ad has been stopped
-    if (typeof this.eventCallbacks_['AdSkipped'] === 'function') {
-        this.eventCallbacks_['AdSkipped']();
-    }
+    this.callback_('AdSkipped');
   }
 
   getAdWidth() {
@@ -264,24 +251,22 @@ class VpaidAd {
     return true;
   }
 
-  log(message) {
+  log_(message) {
     if (this.adParameters_.AD_TESTING) {
-      console.log(message);
+      console.log_(message);
     }
   }
 
   collapseAd() {
     this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-    if (typeof this.eventCallbacks_['AdCollapsed'] === 'function') {
-        this.eventCallbacks_['AdCollapsed']();
-    }
+    this.callback_('AdCollapsed');
   }
+
   expandAd() {
     this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
-    if (typeof this.eventCallbacks_['AdExpanded'] === 'function') {
-        this.eventCallbacks_['AdExpanded']();
-    }
+    this.callback_('AdExpanded');
   }
+
   getAdDuration() {
     //User has interacted
     if (this.userInteracted) {
@@ -298,6 +283,7 @@ class VpaidAd {
     // Not supported. ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
     return -1
   }
+
   getAdRemainingTime() {
     //User has interacted
     if (this.userInteracted) {
@@ -317,6 +303,13 @@ class VpaidAd {
         // Return the remaining time in seconds
         return video.duration - video.currentTime;
       }
+    }
+  }
+
+  callback_(event) {
+    if (typeof this.eventCallbacks_[event] === 'function') {
+      this.eventCallbacks_[event]();
+      this.log_(event);
     }
   }
 
