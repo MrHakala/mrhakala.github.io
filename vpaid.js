@@ -110,7 +110,7 @@ class VpaidAd {
       // Trigger a click on the element below
       let elemBelow = iframeDoc.elementFromPoint(event.clientX, event.clientY);
       this.log_(elemBelow);
-      this.log_((event.clientX+' : '+event.clientY);
+      this.log_(event.clientX+' : '+event.clientY);
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       clearTimeout(this.timer);
