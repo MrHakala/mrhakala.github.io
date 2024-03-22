@@ -253,7 +253,7 @@ class VpaidAd {
 
   log_(message) {
     if (this.adParameters_.AD_TESTING) {
-      console.log_(message);
+      console.log(message);
     }
   }
 
