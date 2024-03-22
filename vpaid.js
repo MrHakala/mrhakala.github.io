@@ -112,7 +112,7 @@ class VpaidAd {
       this.log_(document.elementFromPoint(event.clientX, event.clientY));
       this.log_(elemBelow);
       this.log_(event.clientX+' : '+event.clientY);
-      try { this.log_(document.getElementById("cavai-iframe-64898").contentDocument.elementFromPoint(event.clientX, event.clientY));)} catch(){}
+      try { this.log_(document.getElementById("cavai-iframe-64898").contentDocument.elementFromPoint(event.clientX, event.clientY)) } catch(){}
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       clearTimeout(this.timer);
