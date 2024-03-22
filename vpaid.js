@@ -68,14 +68,14 @@ class VpaidAd {
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       this.videoLoaded_();
 
-      // Use separate timer for ad duration
-      if (this.adDuration) {
-        this.startTime = Date.now(); // Record start time
-        this.setTimer_(this.adDuration); // Set a timer for 30 seconds
-      }
 
       this.iframe_.addEventListener('load', () => {
         this.log_('IFRAME LOADED!');
+        // Use separate timer for ad duration
+        if (this.adDuration) {
+          this.startTime = Date.now(); // Record start time
+          this.setTimer_(this.adDuration); // Set a timer for 30 seconds
+        }
         this.trackInteraction_();
         // No videos to load -> Callback to player that ad loaded
         if (!this.adParameters_.VIDEO_SRC) {
@@ -96,8 +96,9 @@ class VpaidAd {
       this.log_('AD CLICKED!');
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
-      this.startTime = Date.now()
-      this.adDuration = this.adDuration || 15000;
+      //this.startTime = Date.now()
+      //this.adDuration = this.adDuration || 15000;
+      clearTimeout(this.timer);
       this.callback_('AdInteraction');
       this.callback_('AdDurationChange');
       this.callback_('AdRemainingTimeChange');
@@ -272,10 +273,10 @@ class VpaidAd {
   }
 
   getAdDuration() {
-    /* User has interacted
+    // User has interacted
     if (this.userInteracted) {
       return -2
-    }*/
+    }
     // Use preset duration
     if (this.adDuration) {
       return this.adDuration
@@ -289,10 +290,10 @@ class VpaidAd {
   }
 
   getAdRemainingTime() {
-    /* User has interacted
+    // User has interacted
     if (this.userInteracted) {
       return -2
-    }*/
+    }
     if (this.adDuration) {
       if (this.isPaused) {
         return (this.adDuration - this.elapsedTime) / 1000;
