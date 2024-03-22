@@ -97,6 +97,8 @@ class VpaidAd {
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       this.callback_('AdInteraction');
+      this.callback_('AdDurationChange');
+      this.callback_('AdRemainingTimeChange');
     });
   }
 
