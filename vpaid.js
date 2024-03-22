@@ -99,8 +99,14 @@ class VpaidAd {
     overlay.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
 
     // Attach a click event listener to the overlay
-    overlay.addEventListener('click', () => {
+    overlay.addEventListener('click', (event) => {
       this.log_('AD CLICKED!');
+      // just catch first click
+      this.style.pointerEvents = 'none';
+      // pass on click to iframe
+      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      elemBelow.click();
+
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       clearTimeout(this.timer);
@@ -110,6 +116,21 @@ class VpaidAd {
     });
 
     this.slot_.appendChild(overlay);
+  }
+
+  trackInteraction_() {
+    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+    iframeDoc.addEventListener('click', (event) => {
+      this.log_('AD CLICKED!');
+      // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
+      this.userInteracted = -2;
+      //this.startTime = Date.now()
+      //this.adDuration = this.adDuration || 15000;
+      clearTimeout(this.timer);
+      this.callback_('AdInteraction');
+      this.callback_('AdDurationChange');
+      this.callback_('AdRemainingTimeChange');
+    });
   }
 
   videoLoaded_(delay = 50) {
