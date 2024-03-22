@@ -102,7 +102,7 @@ class VpaidAd {
     overlay.addEventListener('click', (event) => {
       this.log_('AD CLICKED!');
       // just catch first click
-      this.style.pointerEvents = 'none';
+      overlay.style.pointerEvents = 'none';
       // pass on click to iframe
       let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
       elemBelow.click();
