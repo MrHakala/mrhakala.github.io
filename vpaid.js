@@ -67,7 +67,7 @@ class VpaidAd {
       this.iframe_ = this.slot_.querySelector('iframe');
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       this.videoLoaded_();
-
+      this.renderOverlay_();
       this.iframe_.addEventListener('load', () => {
         this.log_('IFRAME LOADED!');
         // Use separate timer for ad duration
@@ -75,7 +75,7 @@ class VpaidAd {
           this.startTime = Date.now(); // Record start time
           this.setTimer_(this.adDuration); // Set a timer for 30 seconds
         }
-        this.trackInteraction_();
+        //this.trackInteraction_();
         // No videos to load -> Callback to player that ad loaded
         if (!this.adParameters_.VIDEO_SRC) {
           this.callback_('AdLoaded');
@@ -89,6 +89,39 @@ class VpaidAd {
     }
   }
 
+  renderOverlay_() {
+    // Create a transparent overlay
+    var overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.right = '0';
+    overlay.style.bottom = '0';
+    overlay.style.zIndex = '999'; // Ensure overlay is above the iframe
+    overlay.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
+
+    // Attach a click event listener to the overlay
+    overlay.addEventListener('click', (event) => {
+      console.log('Overlay clicked');
+      overlay.style.pointerEvents = 'none';
+
+      // Trigger a click on the element below
+      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      this.log_(elemBelow);
+      this.log_('AD CLICKED!');
+      // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
+      this.userInteracted = -2;
+      clearTimeout(this.timer);
+      this.renderCloseButton_();
+      this.callback_('AdInteraction');
+      this.callback_('AdDurationChange');
+      this.callback_('AdRemainingTimeChange');
+    });
+
+    // Append the overlay to the slot
+    this.iframe_.appendChild(overlay);
+  }
+
   trackInteraction_() {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
     iframeDoc.addEventListener('click', (event) => {
@@ -96,6 +129,7 @@ class VpaidAd {
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       clearTimeout(this.timer);
+      this.renderCloseButton_();
       this.callback_('AdInteraction');
       this.callback_('AdDurationChange');
       this.callback_('AdRemainingTimeChange');
@@ -319,6 +353,35 @@ class VpaidAd {
     this.timer = setTimeout(() => {
         this.stopAd(); // Automatically stop the ad when time is up
     }, duration);
+
+    // Set another timeout for AD_SKIP to show the close button
+    if (this.adSkip && this.adSkip < duration) {
+      setTimeout(() => {
+        this.renderCloseButton_();
+      }, this.adSkip);
+    }
+  }
+
+  renderCloseButton_() {
+    // Check if the close button already exists to avoid duplicates
+    if (!this.slot_.querySelector('.close-btn')) {
+      const closeButton = document.createElement('div');
+      closeButton.innerText = 'X'; // Text for the close button
+      closeButton.style.position = 'absolute';
+      closeButton.style.top = '0';
+      closeButton.style.right = '0';
+      closeButton.style.cursor = 'pointer';
+      closeButton.style.color = 'white'; // Adjust styles as needed
+      closeButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      closeButton.style.padding = '10px';
+      closeButton.className = 'close-btn';
+
+      closeButton.addEventListener('click', () => {
+        this.skipAd(); // Assuming skipAd method handles ad skipping logic
+      });
+
+      this.slot_.appendChild(closeButton);
+    }
   }
 
   // Placeholder for required functions by eg.
