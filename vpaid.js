@@ -100,7 +100,7 @@ class VpaidAd {
         }
     });
 
-    iframeDoc.addEventListener('click', (event) => {
+    this.iframe_.addEventListener('click', (event) => {
       this.log_('AD CLICKED!');
       this.interacted_();
     });
