@@ -67,15 +67,15 @@ class VpaidAd {
       this.iframe_ = this.slot_.querySelector('iframe');
       this.resizeAd(this.slot_.clientWidth, this.slot_.clientHeight, this.attributes_['viewMode']);
       this.videoLoaded_();
+
       this.iframe_.addEventListener('load', () => {
         this.log_('IFRAME LOADED!');
-        this.renderOverlay_();
         // Use separate timer for ad duration
         if (this.adDuration) {
           this.startTime = Date.now(); // Record start time
           this.setTimer_(this.adDuration); // Set a timer for 30 seconds
         }
-        //this.trackInteraction_();
+        this.trackInteraction_();
         // No videos to load -> Callback to player that ad loaded
         if (!this.adParameters_.VIDEO_SRC) {
           this.callback_('AdLoaded');
@@ -89,52 +89,29 @@ class VpaidAd {
     }
   }
 
-  renderOverlay_() {
-    // Create a transparent overlay
-    var overlay = document.createElement('div');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.right = '0';
-    overlay.style.bottom = '0';
-    overlay.style.zIndex = '999'; // Ensure overlay is above the iframe
-    overlay.style.cursor = 'pointer'; // Change cursor to indicate it's clickable
-    overlay.className = 'FUCKINGOVERLAY';
-
-    // Attach a click event listener to the overlay
-    const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
-    overlay.addEventListener('click', (event) => {
-      console.log('Overlay clicked');
-      //overlay.style.pointerEvents = 'none';
-
-      // Trigger a click on the element below
-      let elemBelow = iframeDoc.elementFromPoint(event.clientX, event.clientY);
-      this.log_(document.elementFromPoint(event.clientX, event.clientY));
-      this.log_(elemBelow);
-      this.log_(event.clientX+' : '+event.clientY);
-      try { 
-        var d = document.getElementById('cavai-iframe-64898');
-        var fd = d.contentDocument || d.contentWindow.document;
-        var fde = d.elementFromPoint(event.clientX, event.clientY);
-        this.log_(d) 
-      } catch(e){this.log_('error')}
-      // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
-      this.userInteracted = -2;
-      clearTimeout(this.timer);
-      this.renderCloseButton_();
-      this.callback_('AdInteraction');
-      this.callback_('AdDurationChange');
-      this.callback_('AdRemainingTimeChange');
-    });
-
-    // Append the overlay to iframe body
-    this.slot_.appendChild(overlay);
-  }
-
   trackInteraction_() {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
+
+    iframeDoc.addEventListener('message', (event) => {
+        if (event.origin !== 'https://delivery-3.cavai.com') {
+            // Not from our expected iframe, ignore the message!
+            return;
+        }
+        console.log(event.data);
+        if (event.data.type === 'analytics') {
+          this.log_('Analytics fired: '+event.data.text);
+          this.interacted_();
+        }
+    });
+
     iframeDoc.addEventListener('click', (event) => {
       this.log_('AD CLICKED!');
+      this.interacted_();
+    });
+  }
+
+  interacted_(){
+    if (this.userInteracted === 0) {
       // ref: https://www.google.com/doubleclick/studio/docs/sdk/flash/as3/en/com_google_ads_studio_vpaid_IVpaid.html
       this.userInteracted = -2;
       clearTimeout(this.timer);
@@ -142,7 +119,7 @@ class VpaidAd {
       this.callback_('AdInteraction');
       this.callback_('AdDurationChange');
       this.callback_('AdRemainingTimeChange');
-    });
+    }
   }
 
   videoLoaded_(delay = 50) {
