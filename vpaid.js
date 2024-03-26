@@ -98,11 +98,14 @@ class VpaidAd {
     });
     
     this.iframe_.contentWindow.addEventListener('message', (event) => {
-        console.log(event);
-        if (event.data.type === 'analytics') {
-          this.log_('Analytics fired: '+event.data.text);
-          this.interacted_();
-        }
+      console.log(event);
+      if (event.source === this.iframe_.contentWindow) {
+        console.log('semi-face SAME window');
+      }
+      if (event.data.type === 'analytics') {
+        this.log_('Analytics fired: '+event.data.text);
+        this.interacted_();
+      }
     });
   }
 
