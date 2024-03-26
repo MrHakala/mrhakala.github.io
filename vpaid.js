@@ -95,13 +95,29 @@ class VpaidAd {
     this.iframe_.addEventListener('message', (event) => {
         console.log(event.data);
         if (event.data.type === 'analytics') {
-          this.log_('Analytics fired: '+event.data.text);
+          this.log_('Analytics frame fired: '+event.data.text);
           this.interacted_();
         }
     });
 
-    this.iframe_.addEventListener('click', (event) => {
-      this.log_('AD CLICKED!');
+    this.iframe_.contentWindow.addEventListener('message', (event) => {
+        console.log(event.data);
+        if (event.data.type === 'analytics') {
+          this.log_('Analytics window fired: '+event.data.text);
+          this.interacted_();
+        }
+    });
+
+    this.iframe_.contentDocument.addEventListener('message', (event) => {
+        console.log(event.data);
+        if (event.data.type === 'analytics') {
+          this.log_('Analytics doc fired: '+event.data.text);
+          this.interacted_();
+        }
+    });
+    
+    this.iframe_.contentWindow.addEventListener('click', (event) => {
+      this.log_('AD CLICK EVENT');
       this.interacted_();
     });
   }
