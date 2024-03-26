@@ -92,7 +92,7 @@ class VpaidAd {
   trackInteraction_() {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
 
-    iframeDoc.addEventListener('message', (event) => {
+    this.iframe_.addEventListener('message', (event) => {
         console.log(event.data);
         if (event.data.type === 'analytics') {
           this.log_('Analytics fired: '+event.data.text);
