@@ -93,10 +93,6 @@ class VpaidAd {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
 
     iframeDoc.addEventListener('message', (event) => {
-        if (event.origin !== 'https://delivery-3.cavai.com') {
-            // Not from our expected iframe, ignore the message!
-            return;
-        }
         console.log(event.data);
         if (event.data.type === 'analytics') {
           this.log_('Analytics fired: '+event.data.text);
