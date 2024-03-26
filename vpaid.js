@@ -91,38 +91,18 @@ class VpaidAd {
 
   trackInteraction_() {
     const iframeDoc = this.iframe_.contentDocument || this.iframe_.contentWindow.document;
-
-    this.iframe_.addEventListener('message', (event) => {
-        console.log(event.data);
-        if (event.data.type === 'analytics') {
-          this.log_('Analytics frame fired: '+event.data.text);
-          this.interacted_();
-        }
-    });
-
-    this.iframe_.contentWindow.addEventListener('message', (event) => {
-        console.log(event.data);
-        if (event.data.type === 'analytics') {
-          this.log_('Analytics window fired: '+event.data.text);
-          this.interacted_();
-        }
-    });
-
-    iframeDoc.addEventListener('message', (event) => {
-        console.log(event.data);
-        if (event.data.type === 'analytics') {
-          this.log_('Analytics doc fired: '+event.data.text);
-          this.interacted_();
-        }
-    });
     
     iframeDoc.addEventListener('click', (event) => {
-      this.log_('AD DOCC EVENT');
+      this.log_('AD CLICK EVENT');
       this.interacted_();
-    });    
-    this.iframe_.addEventListener('click', (event) => {
-      this.log_('AD FRAME EVENT');
-      this.interacted_();
+    });
+    
+    this.iframe_.contentWindow.addEventListener('message', (event) => {
+        console.log(event);
+        if (event.data.type === 'analytics') {
+          this.log_('Analytics fired: '+event.data.text);
+          this.interacted_();
+        }
     });
   }
 
