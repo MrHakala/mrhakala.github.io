@@ -108,7 +108,7 @@ class VpaidAd {
         }
     });
 
-    this.iframe_.contentDocument.addEventListener('message', (event) => {
+    iframeDoc.addEventListener('message', (event) => {
         console.log(event.data);
         if (event.data.type === 'analytics') {
           this.log_('Analytics doc fired: '+event.data.text);
@@ -116,8 +116,12 @@ class VpaidAd {
         }
     });
     
-    this.iframe_.contentWindow.addEventListener('click', (event) => {
-      this.log_('AD CLICK EVENT');
+    iframeDoc.addEventListener('click', (event) => {
+      this.log_('AD DOCC EVENT');
+      this.interacted_();
+    });    
+    this.iframe_.addEventListener('click', (event) => {
+      this.log_('AD FRAME EVENT');
       this.interacted_();
     });
   }
